@@ -1,7 +1,6 @@
-#yorum
-gdyu
-#yorum=sh
-s=   dwqha
-ıefhd #yorum
-lkdfh
-#yorum
+WIDTH=2
+HEIGHT=3
+ENTRY=1,2
+EXIT=1,1
+OUTPUT_FILE=maze.txt
+PERFECT=True
