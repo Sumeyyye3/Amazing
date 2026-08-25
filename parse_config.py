@@ -20,7 +20,7 @@ def validate_and_convert_config(raw_config: Dict[str, str]) -> Dict[str, Any]:
     """Validates required keys, converts types, and checks bounds."""
     required_keys = {
         "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
-        }
+    }
     missing_keys = required_keys - set(raw_config.keys())
 
     if missing_keys:
@@ -143,3 +143,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+    # merhabalar
