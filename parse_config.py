@@ -1,4 +1,3 @@
-import sys
 from typing import Dict, Any, Tuple
 
 
@@ -16,32 +15,52 @@ def parse_coordinates(coord_str: str, key_name: str) -> Tuple[int, int]:
         )
 
 
-def validate_and_convert_config(raw_config: Dict[str, str]) -> Dict[str, Any]:
-    """Validates required keys, converts types, and checks bounds."""
+def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
+    """Checks required keys are present and converts raw string values
+    to their proper types (int, tuple, bool)."""
     required_keys = {
         "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
     }
-    missing_keys = required_keys - set(raw_config.keys())
+    missing_keys = required_keys - set(dict_config.keys())
 
     if missing_keys:
         raise ValueError(
             f"Missing mandatory configuration keys: {', '.join(missing_keys)}"
         )
 
-    config: Dict[str, Any] = {}
+    config = {}
 
     try:
-        config["WIDTH"] = int(raw_config["WIDTH"])
-        config["HEIGHT"] = int(raw_config["HEIGHT"])
+        config["WIDTH"] = int(dict_config["WIDTH"])
+        config["HEIGHT"] = int(dict_config["HEIGHT"])
     except ValueError:
         raise ValueError("WIDTH and HEIGHT must be valid integers.")
 
     if config["WIDTH"] <= 0 or config["HEIGHT"] <= 0:
         raise ValueError("WIDTH and HEIGHT must be positive integers.")
 
-    config["ENTRY"] = parse_coordinates(raw_config["ENTRY"], "ENTRY")
-    config["EXIT"] = parse_coordinates(raw_config["EXIT"], "EXIT")
+    config["ENTRY"] = parse_coordinates(dict_config["ENTRY"], "ENTRY")
+    config["EXIT"] = parse_coordinates(dict_config["EXIT"], "EXIT")
 
+    perfect_str = dict_config["PERFECT"].lower()
+    if perfect_str in ("true", "1"):
+        config["PERFECT"] = True
+    elif perfect_str in ("false", "0"):
+        config["PERFECT"] = False
+    else:
+        raise ValueError(f"Invalid value for PERFECT:"
+                         f" '{dict_config['PERFECT']}'")
+
+    if not dict_config["OUTPUT_FILE"]:
+        raise ValueError("OUTPUT_FILE cannot be empty.")
+
+    config["OUTPUT_FILE"] = dict_config["OUTPUT_FILE"]
+
+    return config
+
+
+def max_coordinat_values(config: Dict[str, Any]) -> None:
+    """Checks ENTRY/EXIT are within maze bounds and differ from each other."""
     entry_x, entry_y = config["ENTRY"]
     exit_x, exit_y = config["EXIT"]
 
@@ -61,20 +80,11 @@ def validate_and_convert_config(raw_config: Dict[str, str]) -> Dict[str, Any]:
     if config["ENTRY"] == config["EXIT"]:
         raise ValueError("ENTRY and EXIT coordinates must be different.")
 
-    perfect_str = raw_config["PERFECT"].lower()
-    if perfect_str in ("true", "1"):
-        config["PERFECT"] = True
-    elif perfect_str in ("false", "0"):
-        config["PERFECT"] = False
-    else:
-        raise ValueError(f"Invalid value for PERFECT:"
-                         f" '{raw_config['PERFECT']}'")
 
-    if not raw_config["OUTPUT_FILE"]:
-        raise ValueError("OUTPUT_FILE cannot be empty.")
-
-    config["OUTPUT_FILE"] = raw_config["OUTPUT_FILE"]
-
+def validate_and_convert_config(raw_config: Dict[str, str]) -> Dict[str, Any]:
+    """Validates required keys, converts types, and checks bounds."""
+    config = convert_config_types(raw_config)
+    max_coordinat_values(config)
     return config
 
 
@@ -87,7 +97,7 @@ def parse_config(filepath: str) -> Dict[str, Any]:
     Returns:
         A dictionary containing parsed configuration values.
     """
-    raw_config: Dict[str, str] = {}
+    key_values = {}
 
     with open(filepath, "r", encoding="utf-8") as file:
         for line_number, line in enumerate(file, 1):
@@ -114,34 +124,7 @@ def parse_config(filepath: str) -> Dict[str, Any]:
                     f"Line {line_number}: Empty key or value found."
                 )
 
-            raw_config[key] = value
+            key_values[key] = value
+    result_config = validate_and_convert_config(key_values)
 
-    return validate_and_convert_config(raw_config)
-
-
-def main() -> None:
-    """Main execution entry point."""
-    if len(sys.argv) != 2:
-        print("Usage: python3 a_maze_ing.py <config_file>")
-        sys.exit(1)
-
-    config_path: str = sys.argv[1]
-
-    try:
-        config_data: Dict[str, Any] = parse_config(config_path)
-        print("Configuration loaded successfully:", config_data)
-    except FileNotFoundError:
-        print(f"Error: Configuration file '{config_path}' not found.")
-        sys.exit(1)
-    except ValueError as e:
-        print(f"Configuration error: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
-
-    # merhabalar
+    return(result_config)
