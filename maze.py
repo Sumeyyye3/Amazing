@@ -1,7 +1,33 @@
 import sys
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Tuple
 
 from parse_config import parse_config
+from kruskal import generate_kruskal_maze  # 1. Kruskal modülünü içe aktarıyoruz
+
+
+def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
+    """Labirent duvarlarını terminalde ASCII karakterleriyle gösterir."""
+    height = len(cells)
+    width = len(cells[0])
+
+    # Üst sınır
+    print("+" + "---+" * width)
+
+    for y in range(height):
+        # Hücre içi ve Doğu (E) duvarları
+        row_str = "|"
+        # Güney (S) duvarları
+        bottom_str = "+"
+
+        for x in range(width):
+            cell = cells[y][x]
+            row_str += "   "
+            row_str += "|" if cell["E"] else " "
+
+            bottom_str += "---+" if cell["S"] else "   +"
+
+        print(row_str)
+        print(bottom_str)
 
 
 def wall_to_hex(cell_walls: Dict[str, bool]) -> str:
@@ -15,59 +41,48 @@ def wall_to_hex(cell_walls: Dict[str, bool]) -> str:
     """
     val = 0
     if cell_walls.get("N", False):
-        val |= 1
+        val += 1
     if cell_walls.get("E", False):
-        val |= 2
+        val += 2
     if cell_walls.get("S", False):
-        val |= 4
+        val += 4
     if cell_walls.get("W", False):
-        val |= 8
+        val += 8
     return f"{val:x}"
 
 
-def save_maze_to_file(
-    grid: List[List[Dict[str, bool]]],
+def write_maze_txt(
+    cells: List[List[Dict[str, bool]]],
     output_filename: str,
     entry: Tuple[int, int],
-    exit_pos: Tuple[int, int],
+    exit: Tuple[int, int],
     path: str,
 ) -> None:
-    """Writes the encoded maze grid and path details to the output file."""
+    """Writes the maze structure, coordinates, and path to the output file."""
     with open(output_filename, "w", encoding="utf-8") as file:
-        for row in grid:
-            row_hex = "".join(wall_to_hex(cell) for cell in row)
+        for row in cells:
+            hex_digits = []
+            for coln in row:
+                hex_digit = wall_to_hex(coln)
+                hex_digits.append(hex_digit)
+            row_hex = "".join(hex_digits)
             file.write(row_hex + "\n")
 
         file.write("\n")
         file.write(f"{entry[0]},{entry[1]}\n")
-        file.write(f"{exit_pos[0]},{exit_pos[1]}\n")
+        file.write(f"{exit[0]},{exit[1]}\n")
         file.write(f"{path}\n")
-
-
-def create_full_wall_grid(width: int, height: int) -> List[List[Dict[str, bool]]]:
-    """WIDTH x HEIGHT boyutunda, her hücrenin 4 duvarı da kapalı (N,E,S,W=True)
-    olan bir grid üretir. wall_to_hex bu durumda her hücre için 15 -> 'f'
-    üretecektir.
-    """
-    grid: List[List[Dict[str, bool]]] = []
-    for _ in range(height):
-        row: List[Dict[str, bool]] = [
-            {"N": True, "E": True, "S": True, "W": True}
-            for _ in range(width)
-        ]
-        grid.append(row)
-    return grid
 
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Usage: python3 maze.py <config_file>")
+        print("Usage: python3 a_maze_ing.py <config_file>")
         sys.exit(1)
 
     config_path = sys.argv[1]
 
     try:
-        config: Dict[str, Any] = parse_config(config_path)
+        config = parse_config(config_path)
     except FileNotFoundError:
         print(f"Error: Configuration file '{config_path}' not found.")
         sys.exit(1)
@@ -75,19 +90,25 @@ def main() -> None:
         print(f"Configuration error: {e}")
         sys.exit(1)
 
-    grid = create_full_wall_grid(config["WIDTH"], config["HEIGHT"])
-
-    save_maze_to_file(
-        grid=grid,
-        output_filename=config["OUTPUT_FILE"],
-        entry=config["ENTRY"],
-        exit_pos=config["EXIT"],
-        path="",
+    # 2. Eskiden kullandığımız create_cells yerine Kruskal algoritmasını çağırıyoruz.
+    # Varsa config dosyasındaki SEED değerini de gönderiyoruz (yoksa None gider).
+    cells = generate_kruskal_maze(
+        width=config["WIDTH"],
+        height=config["HEIGHT"],
+        seed=config.get("SEED"),
     )
 
-    print(f"Maze '{config['OUTPUT_FILE']}' dosyasına yazıldı.")
+    write_maze_txt(
+        cells,
+        config["OUTPUT_FILE"],
+        config["ENTRY"],
+        config["EXIT"],
+        "",  # Path (yol çözücü) eklendiğinde burası beslenecek
+    )
+
+    print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
+    print_maze_ascii(cells)
 
 
 if __name__ == "__main__":
     main()
-
