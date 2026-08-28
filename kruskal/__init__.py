@@ -1,3 +1,3 @@
-import generate_kruskal_mage
+from .kruskal import generate_kruskal_maze
 
-__all__ = ["generate_kruskal_mage"]
+__all__ = ["generate_kruskal_maze"]

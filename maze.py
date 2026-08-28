@@ -1,8 +1,8 @@
 import sys
 from typing import List, Dict, Tuple
 
-import parse
-from kruskal.kruskal import generate_kruskal_maze
+from parse import parse_config
+from kruskal import generate_kruskal_maze
 
 
 def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:

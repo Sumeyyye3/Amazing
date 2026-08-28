@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "maze"
+version = "0.1.0"
+description = "Perfect maze generator using Randomized Kruskal algorithm"
+authors = [
+    "Sumeyye Dogan <sumdogan@student.42kocaeli.com.tr>",
+    "Baris Sakalli <basakalli@student.42Kocaeli.com.tr>"
+]
+readme = "README.md"
+packages = [
+    { include = "kruskal" },
+    { include = "parse" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
