@@ -1,8 +1,8 @@
 import sys
 from typing import List, Dict, Tuple
 
-from parse_config import parse_config
-from kruskal import generate_kruskal_maze  # 1. Kruskal modülünü içe aktarıyoruz
+import parse
+from kruskal.kruskal import generate_kruskal_maze
 
 
 def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
@@ -93,9 +93,9 @@ def main() -> None:
     # 2. Eskiden kullandığımız create_cells yerine Kruskal algoritmasını çağırıyoruz.
     # Varsa config dosyasındaki SEED değerini de gönderiyoruz (yoksa None gider).
     cells = generate_kruskal_maze(
-        width=config["WIDTH"],
-        height=config["HEIGHT"],
-        seed=config.get("SEED"),
+        config["WIDTH"],
+        config["HEIGHT"],
+        config.get("SEED"),
     )
 
     write_maze_txt(
