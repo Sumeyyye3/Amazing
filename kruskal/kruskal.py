@@ -32,20 +32,22 @@ class DisjointSet:
         return False
 
 
-def generate_kruskal_maze(width: int, height: int, seed: Any = None) -> List[List[Dict[str, bool]]]:
+def generate_kruskal_maze(width: int, height: int, seed: Any) -> List[List[Dict[str, bool]]]:
     """Generates a perfect maze using Randomized Kruskal's Algorithm."""
     if seed is not None:
-        random.seed(seed)
+        random.seed(seed)#???????????????????????????????????*
 
-    # 1. Başlangıçta tüm duvarları kapalı (True) grid oluştur
-    cells: List[List[Dict[str, bool]]] = [
-        [{"N": True, "E": True, "S": True, "W": True} for _ in range(width)]
-        for _ in range(height)
-    ]
+    cells = []
 
-    # 2. Tüm iç duvarların (edge) listesini çıkar
+    for _ in range(height):
+        row = []
+        for _ in range(width):
+            cell = {"N": True, "E": True, "S": True, "W": True}
+            row.append(cell)
+        cells.append(row)
+        # 2. Tüm iç duvarların (edge) listesini çıkar
     # Her duvar: ((x1, y1), (x2, y2), yön1, yön2)
-    walls: List[Tuple[Tuple[int, int], Tuple[int, int], str, str]] = []
+    walls = []
 
     for y in range(height):
         for x in range(width):
