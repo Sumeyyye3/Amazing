@@ -27,5 +27,5 @@ This project was developed collaboratively as part of a group assignment:
 * **Configurable:** Parses dynamic dimensions (`width`, `height`) and parameters via external config files.
 * **Pathfinder:** Computes and highlights the shortest exit path from start to goal.
 * **Generator-Based Architecture:** Employs Python `yield` generators for step-by-step state tracking and inspection.
-
+DÜZENLENECEK
 ---
