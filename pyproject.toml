@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Perfect maze generator using Randomized Kruskal algorithm"
 authors = [
     "Sumeyye Dogan <sumdogan@student.42kocaeli.com.tr>",
-    "Baris Sakalli <basakalli@student.42Kocaeli.com.tr>"
+    "Baris Sakalli <basakall@student.42Kocaeli.com.tr>"
 ]
 readme = "README.md"
 packages = [

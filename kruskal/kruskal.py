@@ -2,73 +2,62 @@ import random
 from typing import List, Dict, Tuple, Any
 
 
-class DisjointSet:
-    """Disjoint-Set (Union-Find) data structure with path compression."""
+class SetManager:
+    """Set-Manager (Union-Find) data structure with path compression."""
 
     def __init__(self, width: int, height: int) -> None:
-        # Her hücre (x, y) başlangıçta kendisinin lideridir (kümesidir)
-        self.parent: Dict[Tuple[int, int], Tuple[int, int]] = {
-            (x, y): (x, y) for x in range(width) for y in range(height)
-        }
+        self.lead = {}#otomatik herkes kendisinin lideri ilk başta 
+        for x in range(width):
+            for y in range(height):
+                cell = (x, y)
+                self.lead[cell] = cell
 
-    def find(self, cell: Tuple[int, int]) -> Tuple[int, int]:
+
+    def find(self, cell: Tuple[int, int]) -> Tuple[int, int]:#
         """Finds the root/representative of the set containing 'cell'."""
-        if self.parent[cell] != cell:
-            # Path compression: Temsilciyi doğrudan köke bağlar
-            self.parent[cell] = self.find(self.parent[cell])
-        return self.parent[cell]
+        if self.lead[cell] != cell:
+            self.lead[cell] = self.find(self.lead[cell])#en üst lideri bul
+        return self.lead[cell]
 
     def union(self, cell1: Tuple[int, int], cell2: Tuple[int, int]) -> bool:
         """Unites sets of cell1 and cell2.
 
         Returns True if merged, False if already in the same set.
         """
-        root1 = self.find(cell1)
-        root2 = self.find(cell2)
+        lead1 = self.find(cell1)
+        lead2 = self.find(cell2)
 
-        if root1 != root2:
-            self.parent[root2] = root1
+        if lead1 != lead2:#liderler farklıysa birleştir,aynıysa birleştirme döngü olur
+            self.lead[lead2] = lead1
             return True
         return False
 
 
-def generate_kruskal_maze(width: int, height: int, seed: Any) -> List[List[Dict[str, bool]]]:
+def generate_kruskal_maze(width: int, height: int) -> List[List[Dict[str, bool]]]:
     """Generates a perfect maze using Randomized Kruskal's Algorithm."""
-    if seed is not None:
-        random.seed(seed)#???????????????????????????????????*
-
-    cells = []
-
-    for _ in range(height):
-        row = []
-        for _ in range(width):
+    cells = []#hücrelerimiz
+    for _ in range(height):#satır sayısı kadar çalışır
+        row = []#satır listesi oluşturur
+        for _ in range(width):#sütun sayısı kadar çalışır
             cell = {"N": True, "E": True, "S": True, "W": True}
             row.append(cell)
         cells.append(row)
-        # 2. Tüm iç duvarların (edge) listesini çıkar
-    # Her duvar: ((x1, y1), (x2, y2), yön1, yön2)
-    walls = []
 
-    for y in range(height):
-        for x in range(width):
-            # Doğu duvarı (sağdaki hücre ile)
-            if x < width - 1:
-                walls.append(((x, y), (x + 1, y), "E", "W"))
-            # Güney duvarı (aşağıdaki hücre ile)
-            if y < height - 1:
-                walls.append(((x, y), (x, y + 1), "S", "N"))
+    walls = []#yıkılabilecek potansiyel duvarları konumlarıyla birlikte
+    #tespit edip bu listeye atıyoruz
+    for y in range(height):#satırlar    (x, y) x:satır indexi
+        for x in range(width):#sütunlar (x, y) y:sütun indexi 
+            if x < width - 1:#x = width demek en sağdasın demek
+                walls.append(((x, y), (x + 1, y), "E", "W"))#hücre,hücre,ortakduvar,ortakduvar
+                #diyoruz ki x,y nin E si ile x+1,y nin W si ortak duvar
+            if y < height - 1:#y= height demek en alttaki duvardasın demek
+                walls.append(((x, y), (x, y + 1), "S", "N"))#aynı işlemi alt üst için yaptım
 
-    # 3. Duvar listesini rastgele karıştır
-    random.shuffle(walls)
+    random.shuffle(walls)#orjinal listeyi değiştiren bir method,listeyi random karıştırı
 
-    # 4. Disjoint-Set yapısını başlat
-    dsu = DisjointSet(width, height)
-
-    # 5. Duvarları gez ve farklı kümelerdeki hücreleri birleştir
-    for (x1, y1), (x2, y2), dir1, dir2 in walls:
-        # Eğer iki hücre farklı kümelerdeyse aradaki duvarı yık ve kümeleri birleştir
-        if dsu.union((x1, y1), (x2, y2)):
-            cells[y1][x1][dir1] = False
-            cells[y2][x2][dir2] = False
+    for (x1, y1), (x2, y2), wall1, wall2 in walls:
+        if SetManager(width, height).union((x1, y1), (x2, y2)):
+            cells[y1][x1][wall1] = False
+            cells[y2][x2][wall2] = False
 
     return cells

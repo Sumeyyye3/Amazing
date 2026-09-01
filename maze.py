@@ -90,12 +90,10 @@ def main() -> None:
         print(f"Configuration error: {e}")
         sys.exit(1)
 
-    # 2. Eskiden kullandığımız create_cells yerine Kruskal algoritmasını çağırıyoruz.
-    # Varsa config dosyasındaki SEED değerini de gönderiyoruz (yoksa None gider).
+
     cells = generate_kruskal_maze(
         config["WIDTH"],
         config["HEIGHT"],
-        config.get("SEED"),
     )
 
     write_maze_txt(
