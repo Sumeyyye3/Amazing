@@ -18,8 +18,9 @@ debug:
 	PYTHONASYNCIODEBUG=1 $(POETRY) run $(PYTHON) -m pdb $(APP)
 
 lint:
-	$(POETRY) run flake8 config.txt *.py
-	$(POETRY) run mypy maze.py *.py --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	$(POETRY) run flake8 *.py
+	$(POETRY) run mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	@echo "No flake8 or mypy errors found."
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
