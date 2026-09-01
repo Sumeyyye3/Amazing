@@ -14,3 +14,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0"
+mypy = "^1.0"
