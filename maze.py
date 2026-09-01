@@ -6,25 +6,28 @@ from print_maze import write_maze_txt
 
 
 def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
-    """Labirent duvarlarını terminalde ASCII karakterleriyle gösterir."""
-    height = len(cells)
-    width = len(cells[0])
+    """Displays maze walls in the terminal using ASCII characters."""
+    height = len(cells)  # satır sayımız
+    width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
-    # Üst sınır
-    print("+" + "---+" * width)
+    print("*" + "-----*" * width)
 
-    for y in range(height):
-        # Hücre içi ve Doğu (E) duvarları
-        row_str = "|"
-        # Güney (S) duvarları
-        bottom_str = "+"
+    for x in range(height):
+        row_str = "|"  # satırın en solundaki dış duvar
+        bottom_str = "*"  # alt duvar çizgisinin başlangıç köşesi
 
-        for x in range(width):
-            cell = cells[y][x]
-            row_str += "   "
-            row_str += "|" if cell["E"] else " "
+        for y in range(width):
+            cell = cells[x][y]
+            row_str += "     "
+            if cell["E"]:
+                row_str += "|"
+            else:
+                row_str += " "
 
-            bottom_str += "---+" if cell["S"] else "   +"
+            if cell["S"]:
+                bottom_str += "-----*"
+            else:
+                bottom_str += "     *"
 
         print(row_str)
         print(bottom_str)
