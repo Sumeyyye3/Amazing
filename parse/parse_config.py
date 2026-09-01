@@ -17,7 +17,9 @@ def parse_coordinates(coord_str: str, key_name: str) -> Tuple[int, int]:
 
 def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     """Checks required keys are present and converts raw string values
-    to their proper types (int, tuple, bool)."""
+
+    to their proper types (int, tuple, bool).
+    """
     required_keys = {
         "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
     }
@@ -28,7 +30,7 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
             f"Missing mandatory configuration keys: {', '.join(missing_keys)}"
         )
 
-    config = {}
+    config: Dict[str, Any] = {}
 
     try:
         config["WIDTH"] = int(dict_config["WIDTH"])
@@ -48,8 +50,9 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     elif perfect_str in ("false", "0"):
         config["PERFECT"] = False
     else:
-        raise ValueError(f"Invalid value for PERFECT:"
-                         f" '{dict_config['PERFECT']}'")
+        raise ValueError(
+            f"Invalid value for PERFECT: '{dict_config['PERFECT']}'"
+        )
 
     if not dict_config["OUTPUT_FILE"]:
         raise ValueError("OUTPUT_FILE cannot be empty.")
@@ -97,7 +100,7 @@ def parse_config(filepath: str) -> Dict[str, Any]:
     Returns:
         A dictionary containing parsed configuration values.
     """
-    key_values = {}
+    key_values: Dict[str, str] = {}
 
     with open(filepath, "r", encoding="utf-8") as file:
         for line_number, line in enumerate(file, 1):
@@ -127,4 +130,4 @@ def parse_config(filepath: str) -> Dict[str, Any]:
             key_values[key] = value
     result_config = validate_and_convert_config(key_values)
 
-    return(result_config)
+    return result_config

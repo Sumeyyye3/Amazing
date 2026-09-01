@@ -2,11 +2,10 @@ PYTHON = python3
 PIP = pip3
 POETRY = poetry
 APP = maze.py config.txt
-TEST = maze_analyzer.py maze.txt
 
-.PHONY: all install run control debug clean fclean re lint
+.PHONY: all install run debug clean fclean re lint lint-strict
 
-all: run control lint clean
+all: run lint clean
 
 install:
 	$(PIP) install poetry
@@ -15,16 +14,12 @@ install:
 run:
 	$(POETRY) run $(PYTHON) $(APP)
 
-control:
-	$(POETRY) run $(PYTHON) $(TEST)
-
 debug:
 	PYTHONASYNCIODEBUG=1 $(POETRY) run $(PYTHON) -m pdb $(APP)
 
 lint:
-	$(POETRY) run mypy .
-	$(POETRY) run flake8 .
-
+	$(POETRY) run flake8 config.txt *.py
+	$(POETRY) run mypy maze.py *.py --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete

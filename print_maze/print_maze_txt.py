@@ -43,4 +43,3 @@ def write_maze_txt(
         file.write(f"{entry[0]},{entry[1]}\n")
         file.write(f"{exit[0]},{exit[1]}\n")
         file.write(f"{path_str}\n")
-

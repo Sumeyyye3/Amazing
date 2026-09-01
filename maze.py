@@ -1,6 +1,5 @@
 import sys
-from typing import List, Dict, Tuple
-
+from typing import List, Dict
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
@@ -47,20 +46,19 @@ def main() -> None:
         print(f"Configuration error: {e}")
         sys.exit(1)
 
-
     cells = generate_kruskal_maze(
         config["WIDTH"],
         config["HEIGHT"],
     )
 
-    #shortest_path = Senin yazdığın en kısa yol algoritmasının return ettiğii
-    #string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
+    # shortest_path = Senin yazdığın en kısa yol algoritmasının return ettiğii
+    # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
     write_maze_txt(
         cells,
         config["OUTPUT_FILE"],
         config["ENTRY"],
         config["EXIT"],
-        "",#shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
+        "",  # shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
     )
 
     print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
