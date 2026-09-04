@@ -1,5 +1,5 @@
 import sys
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
@@ -11,8 +11,13 @@ class Colors:
     WALL = "\033[36m"
 
 
-def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
+def print_maze_ascii(
+    cells: List[List[Dict[str, bool]]],
+    entry: Tuple[int, int],
+    exit: Tuple[int, int]
+) -> None:
     """Displays maze walls in the terminal using ASCII characters."""
+
     height = len(cells)  # satır sayımız
     width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
@@ -24,7 +29,12 @@ def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
 
         for y in range(width):
             cell = cells[x][y]
-            row_str += "     "
+
+            if (x, y) == entry or (x, y) == exit:
+                row_str += "  +  "
+            else:
+                row_str += "     "
+
             if cell["E"]:
                 row_str += Colors.WALL + "|" + Colors.RESET
             else:
@@ -72,7 +82,7 @@ def main() -> None:
     )
 
     print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
-    print_maze_ascii(cells)
+    print_maze_ascii(cells, config["ENTRY"], config["EXIT"])
 
 
 if __name__ == "__main__":
