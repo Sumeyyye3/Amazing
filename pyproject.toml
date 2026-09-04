@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "maze"
+name = "a_maze_ing"
 version = "0.1.0"
 description = "Perfect maze generator using Randomized Kruskal algorithm"
 authors = [
