@@ -27,6 +27,7 @@ clean:
 	rm -rf .pytest_cache .build .mypy_cache
 
 fclean: clean
+    rm -rf poetry.lock
 	$(POETRY) env remove --all 2>/dev/null || true
 	rm -rf .venv
 
