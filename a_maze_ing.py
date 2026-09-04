@@ -5,29 +5,35 @@ from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
 
+class Colors:
+    """ANSI escape codes for colored terminal output."""
+    RESET = "\033[0m"
+    WALL = "\033[36m"
+
+
 def print_maze_ascii(cells: List[List[Dict[str, bool]]]) -> None:
     """Displays maze walls in the terminal using ASCII characters."""
     height = len(cells)  # satır sayımız
     width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
-    print("*" + "-----*" * width)
+    print(Colors.WALL + "*" + "-----*" * width + Colors.RESET)
 
     for x in range(height):
-        row_str = "|"  # satırın en solundaki dış duvar
-        bottom_str = "*"  # alt duvar çizgisinin başlangıç köşesi
+        row_str = Colors.WALL + "|" + Colors.RESET  # satırın en solundaki dış duvar
+        bottom_str = Colors.WALL + "*" + Colors.RESET  # alt duvar çizgisinin başlangıç köşesi
 
         for y in range(width):
             cell = cells[x][y]
             row_str += "     "
             if cell["E"]:
-                row_str += "|"
+                row_str += Colors.WALL + "|" + Colors.RESET
             else:
                 row_str += " "
 
             if cell["S"]:
-                bottom_str += "-----*"
+                bottom_str += Colors.WALL + "-----*" + Colors.RESET
             else:
-                bottom_str += "     *"
+                bottom_str += "     " + Colors.WALL + "*" + Colors.RESET
 
         print(row_str)
         print(bottom_str)
