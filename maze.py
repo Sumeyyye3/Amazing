@@ -52,6 +52,7 @@ def main() -> None:
     cells = generate_kruskal_maze(
         config["WIDTH"],
         config["HEIGHT"],
+        config.get("SEED")
     )
 
     # shortest_path = Senin yazdığın en kısa yol algoritmasının return ettiğii

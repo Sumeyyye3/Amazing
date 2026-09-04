@@ -53,11 +53,18 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
         raise ValueError(
             f"Invalid value for PERFECT: '{dict_config['PERFECT']}'"
         )
-
     if not dict_config["OUTPUT_FILE"]:
         raise ValueError("OUTPUT_FILE cannot be empty.")
 
     config["OUTPUT_FILE"] = dict_config["OUTPUT_FILE"]
+    seed_value = dict_config.get("SEED")
+    if seed_value is not None and seed_value != "":
+        try:
+            config["SEED"] = int(seed_value)
+        except ValueError:
+            raise ValueError("SEED must be a valid integer.")
+    else:
+        config["SEED"] = None
 
     return config
 

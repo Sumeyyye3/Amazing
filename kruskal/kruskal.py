@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Any
 
 
 class SetManager:
@@ -36,10 +36,14 @@ class SetManager:
 
 
 def generate_kruskal_maze(
-    width: int, height: int
+    width: int, height: int, seed: Any
 ) -> List[List[Dict[str, bool]]]:
     """Generates a perfect maze using Randomized Kruskal's Algorithm."""
     cells = []  # hücrelerimiz
+
+    if seed is not None:
+        random.seed(seed)
+
     for _ in range(height):  # satır sayısı kadar çalışır
         row = []  # satır listesi oluşturur
         for _ in range(width):  # sütun sayısı kadar çalışır
