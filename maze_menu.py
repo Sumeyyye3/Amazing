@@ -14,6 +14,58 @@ class Colors:
     ]
 
 
+def print_with_colored(
+    cells: List[List[Dict[str, bool]]],
+    entry: Tuple[int, int],
+    exit_: Tuple[int, int],
+    wall_color: str,
+    path_coords: List[Tuple[int, int]],
+) -> None:
+    reset = "\033[0m"
+    entry_color = "\033[95m"
+    exit_color = "\033[95m"
+    path_color = "\033[95m"
+
+    height = len(cells)
+    width = len(cells[0])
+
+    if path_coords:
+        path_set = set(path_coords)
+    else:
+        path_set = set()
+
+    print(f"{wall_color}*{'-----*' * width}{reset}")
+
+    for x in range(height):
+        row_str = f"{wall_color}|{reset}"
+        bottom_str = f"{wall_color}*{reset}"
+
+        for y in range(width):
+            cell = cells[x][y]
+
+            if (x, y) == entry:
+                row_str += f"  {entry_color}\u2665{reset}  "
+            elif (x, y) == exit_:
+                row_str += f"  {exit_color}\u2665{reset}  "
+            elif (x, y) in path_set:
+                row_str += f"  {path_color}.{reset}  "
+            else:
+                row_str += "     "
+
+            if cell["E"]:
+                row_str += f"{wall_color}|{reset}"
+            else:
+                row_str += " "
+
+            if cell["S"]:
+                bottom_str += f"{wall_color}-----*{reset}"
+            else:
+                bottom_str += f"     {wall_color}*{reset}"
+
+        print(row_str)
+        print(bottom_str)
+
+
 def path_cell_coords(
     entry: Tuple[int, int], path_str: str
 ) -> List[Tuple[int, int]]:
@@ -74,7 +126,11 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
 
         write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
 
-        if show_path and shortest_path:
-            path_coords = path_cell_coords(entry, shortest_path)
+        if show_path and shortest_path:  
+            shortest_coord = path_cell_coords(entry, shortest_path)
         else:
-            path_coords = None
+            shortest_coord = None
+
+        print_with_colored(
+            cells, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
+        )
