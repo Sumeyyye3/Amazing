@@ -6,7 +6,6 @@ from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
 
-
 def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
     entry: Tuple[int, int],
