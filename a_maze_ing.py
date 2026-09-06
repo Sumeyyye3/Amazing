@@ -24,7 +24,9 @@ def print_maze_ascii(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x + 1, y + 1) == entry or (x + 1, y + 1) == exit:
+            if (x, y) == entry or (x, y) == exit:
+                x += 1
+                y += 1
                 row_str +="  +  "
             elif (x, y) in blocked:
                 row_str += "  +  "

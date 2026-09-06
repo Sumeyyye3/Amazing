@@ -1,6 +1,6 @@
 WIDTH = 5  #6 nın altındayken 42 şekli olmuyooo!!!!
 HEIGHT = 5
 ENTRY = 1,1
-EXIT = 1,2
+EXIT = 4,4
 OUTPUT_FILE = print_maze/maze.txt
 PERFECT = False
