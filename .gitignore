@@ -1,1 +1,5 @@
 .venv
+.maze_txt
+.__pycache__
+poetry_lock
+.mypy_cache
