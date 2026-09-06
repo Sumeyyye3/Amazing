@@ -52,7 +52,7 @@ def print_with_colored(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x, y) == entry or (x, y) == exit:
+            if (x + 1, y + 1) == entry or (x + 1, y + 1) == exit:
                 row_str += f"  {entry_color}\u2764{reset}  "
             
             elif (x, y) in path_set:
