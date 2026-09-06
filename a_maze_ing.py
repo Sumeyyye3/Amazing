@@ -4,20 +4,20 @@ from typing import List, Dict, Tuple
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
+from fourty_two import get_cells
 
 
 def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
     entry: Tuple[int, int],
-    exit: Tuple[int, int]
+    exit: Tuple[int, int],
 ) -> None:
-    """Displays maze walls in the terminal using ASCII characters."""
 
     height = len(cells)  # satır sayımız
     width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
     print("*" + "-----*" * width)
-
+    blocked = get_cells(height, width)
     for x in range(height):
         row_str ="|"  # satırın en solundaki dış duvar
         bottom_str ="*"  # alt duvar çizgisinin başlangıç köşesi
@@ -25,18 +25,28 @@ def print_maze_ascii(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x, y) == entry or (x, y) == exit:
+            if (x + 1, y + 1) == entry or (x + 1, y + 1) == exit:
                 row_str +="  +  "
+            elif (x, y) in blocked:
+                row_str += "  +  "
             else:
                 row_str += "     "
 
             if cell["E"]:
                 row_str +="|"
+            elif (x, y) in blocked:
+                row_str += "|"
+            elif (y + 1 < width) and ((x, y + 1) in blocked):
+                row_str += "|"
             else:
                 row_str += " "
 
             if cell["S"]:
                 bottom_str +="-----*"
+            elif (x, y) in blocked:
+                bottom_str += "-----*"
+            elif (x + 1 < height) and ((x + 1, y) in blocked):
+                bottom_str += "-----*"
             else:
                 bottom_str += "     " +"*"
 
