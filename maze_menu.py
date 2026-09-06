@@ -5,12 +5,16 @@ from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
 class Colors:
-    wall_color_palette = [
+    wall_colors = [
         "\033[97m",
         "\033[96m",
         "\033[92m",
         "\033[93m",
         "\033[94m",
+        "\033[98m",
+        "\033[91m",
+        "\033[95m",
+        "\033[96m",
     ]
 
 
@@ -115,7 +119,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             show_path = not show_path
         elif choice == "3":
             color_index = color_index + 1
-            if color_index >= len(Colors.wall_color_palette):
+            if color_index >= len(Colors.wall_colors):
                 color_index = 0
         elif choice == "4":
             print("Byy <3 <3 <3")
@@ -132,5 +136,5 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             shortest_coord = None
 
         print_with_colored(
-            cells, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
+            cells, entry, exit, Colors.wall_colors[color_index], shortest_coord
         )
