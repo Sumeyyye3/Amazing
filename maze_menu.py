@@ -4,6 +4,15 @@ from typing import Dict, List, Optional, Tuple
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
+class Colors:
+    wall_color_palette = [
+        "\033[97m",
+        "\033[96m",
+        "\033[92m",
+        "\033[93m",
+        "\033[94m",
+    ]
+
 def create_maze(config: Dict) -> List[List[Dict[str, bool]]]:
     """Rastgele yeni bir seed ile yeni bir labirent üretir."""
     new_seed = random.randint(0, 10**9)
@@ -12,14 +21,10 @@ def create_maze(config: Dict) -> List[List[Dict[str, bool]]]:
 
 def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -> None:
     """a_maze_ing.py'nin main() fonksiyonu ilk çizimi yaptıktan sonra
-
-    kontrolü buraya devreder. `shortest_path`, a_maze_ing.py'de hesaplanıp
-    buraya aktarılır: arkadaşın en kısa yol algoritmasını yazınca, sadece
-    a_maze_ing.py'deki değeri değiştirmesi yeterli olacak, burada hiçbir
-    şey değişmeyecek.
+    kontrolü buraya devreder.
     """
     entry = config["ENTRY"]
-    exit_ = config["EXIT"]
+    exit = config["EXIT"]
     color_index = 0
     show_path = False
 
@@ -36,14 +41,16 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             cells = create_maze(config)
             show_path = False
         elif choice == "2":
-            show_path = True
+            show_path = not show_path
         elif choice == "3":
-            ...  #renkler oluşturulacak
+            color_index = color_index + 1
+            if color_index >= len(Colors.wall_color_palette):
+                color_index = 0
         elif choice == "4":
-            print("Byy byy <3!")
+            print("Byy <3 <3 <3")
             break
         else:
             print("Invalid choice, please enter a number between 1 and 4.")
             continue
 
-        write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit_, shortest_path)
+        write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
