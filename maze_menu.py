@@ -1,13 +1,13 @@
 import random
-from typing import Dict, List, Optional, Tuple
 from maze_menu import menu
+from typing import Dict, List, Optional, Tuple
+from fourty_two import get_cells, blocks
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
-from fourty_two import get_cells
 
 
 class Colors:
-    wall_colors = [
+    wall_color_palette = [
         "\033[97m",
         "\033[96m",
         "\033[92m",
@@ -23,9 +23,9 @@ class Colors:
 def print_with_colored(
     cells: List[List[Dict[str, bool]]],
     entry: Tuple[int, int],
-    exit_: Tuple[int, int],
+    exit: Tuple[int, int],
     wall_color: str,
-    path_coords: List[Tuple[int, int]],
+    path_coords: Optional[List[Tuple[int, int]]],
 ) -> None:
     reset = "\033[0m"
     entry_color = "\033[95m"
