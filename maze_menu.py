@@ -1,8 +1,10 @@
 import random
 from typing import Dict, List, Optional, Tuple
-
+from maze_menu import menu
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
+from fourty_two import get_cells
+
 
 class Colors:
     wall_colors = [
@@ -29,6 +31,7 @@ def print_with_colored(
     entry_color = "\033[95m"
     exit_color = "\033[95m"
     path_color = "\033[95m"
+    number_color = "\033[1m\033[95m"
 
     height = len(cells)
     width = len(cells[0])
@@ -37,6 +40,8 @@ def print_with_colored(
         path_set = set(path_coords)
     else:
         path_set = set()
+
+    number_cells = get_cells(height, width)
 
     print(f"{wall_color}*{'-----*' * width}{reset}")
 
@@ -47,12 +52,13 @@ def print_with_colored(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x, y) == entry:
-                row_str += f"  {entry_color}\u2665{reset}  "
-            elif (x, y) == exit_:
-                row_str += f"  {exit_color}\u2665{reset}  "
+            if (x, y) == entry or (x, y) == exit:
+                row_str += f"  {entry_color}\u2764{reset}  "
+            
             elif (x, y) in path_set:
                 row_str += f"  {path_color}.{reset}  "
+            elif (x, y) in number_cells:
+                row_str += f"  {number_color}\u2764{reset}  "
             else:
                 row_str += "     "
 
