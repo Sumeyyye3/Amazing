@@ -18,6 +18,29 @@ def get_cells(height: int, width: int) -> Set[Tuple[int, int]]:
         "XXX",
     ]
 
+    pattern_rows = [
+        row_four + "." + row_two
+        for row_four, row_two in zip(digit_four, digit_two)
+    ]
+
+    pattern_height = len(pattern_rows)
+    pattern_width = len(pattern_rows[0])
+
+    start_row = (height - pattern_height) // 2
+    start_col = (width - pattern_width) // 2
+
+    if start_row < 0 or start_col < 0:
+        # Labirent "42" deseninden küçük, hiçbir şey çizmiyoruz.
+        return set()
+
+    marked_cells = set()
+    for i, row in enumerate(pattern_rows):
+        for j, symbol in enumerate(row):
+            if symbol == "X":
+                marked_cells.add((start_row + i, start_col + j))
+
+    return marked_cells
+
 
 def blocks(
     config: Dict, blocked_cells: Set[Tuple[int, int]], seed: Optional[int] = None
