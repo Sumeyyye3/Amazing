@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, Set
 
 
 class SetManager:
@@ -36,10 +36,15 @@ class SetManager:
 
 
 def generate_kruskal_maze(
-    width: int, height: int, seed: Any
+    width: int,
+    height: int,
+    seed: Any,
+    blocked_cells: Set[Tuple[int, int]],
 ) -> List[List[Dict[str, bool]]]:
-    """Generates a perfect maze using Randomized Kruskal's Algorithm."""
     cells = []  # hücrelerimiz
+
+    if blocked_cells is None:
+        blocked_cells = set()
 
     if seed is not None:
         random.seed(seed)
@@ -56,11 +61,13 @@ def generate_kruskal_maze(
     walls = []
     for y in range(height):  # satırlar (x, y) x:satır indexi
         for x in range(width):  # sütunlar (x, y) y:sütun indexi
-            if x < width - 1:  # x = width demek en sağdasın demek
+            if (x, y) in blocked_cells:
+                continue
+            if x < width - 1 and (x + 1, y) not in blocked_cells:
                 # hücre, hücre, ortakduvar, ortakduvar
                 # diyoruz ki x,y nin E si ile x+1,y nin W si ortak duvar
                 walls.append(((x, y), (x + 1, y), "E", "W"))
-            if y < height - 1:  # y = height demek en alttaki duvardasın demek
+            if y < height - 1 and (x, y + 1) not in blocked_cells:
                 # aynı işlemi alt üst için yaptım
                 walls.append(((x, y), (x, y + 1), "S", "N"))
 

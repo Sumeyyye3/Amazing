@@ -1,8 +1,6 @@
 import random
-from maze_menu import menu
 from typing import Dict, List, Optional, Tuple
 from fourty_two import get_cells, blocks
-from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
 
@@ -94,20 +92,17 @@ def path_cell_coords(
     return coords
 
 
-def create_maze(config: Dict) -> List[List[Dict[str, bool]]]:
-    """Rastgele yeni bir seed ile yeni bir labirent üretir."""
-    new_seed = random.randint(0, 10**9)
-    return generate_kruskal_maze(config["WIDTH"], config["HEIGHT"], new_seed)
-
-
 def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -> None:
-    """a_maze_ing.py'nin main() fonksiyonu ilk çizimi yaptıktan sonra
-    kontrolü buraya devreder.
-    """
     entry = config["ENTRY"]
     exit = config["EXIT"]
     color_index = 0
     show_path = False
+
+    height = len(cells)
+    width = len(cells[0])
+    number_cells = get_cells(height, width)
+
+    cells = blocks(config, number_cells, config.get("SEED"))
 
     while True:
         print("\n=== A-Maze-ing ===")
@@ -119,13 +114,14 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
         choice = input("Choice? (1-4): ").strip()
 
         if choice == "1":
-            cells = create_maze(config)
+            new_seed = random.randint(0, 10**9)
+            cells = blocks(config, number_cells, new_seed)
             show_path = False
         elif choice == "2":
             show_path = not show_path
         elif choice == "3":
             color_index = color_index + 1
-            if color_index >= len(Colors.wall_colors):
+            if color_index >= len(Colors.wall_color_palette):
                 color_index = 0
         elif choice == "4":
             print("Byy <3 <3 <3")
@@ -136,11 +132,11 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
 
         write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
 
-        if show_path and shortest_path:  
+        if show_path and shortest_path:
             shortest_coord = path_cell_coords(entry, shortest_path)
         else:
             shortest_coord = None
 
         print_with_colored(
-            cells, entry, exit, Colors.wall_colors[color_index], shortest_coord
+            cells, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
         )
