@@ -4,8 +4,7 @@ from typing import List, Dict, Tuple
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
-from fourty_two import get_cells
-
+from fourty_two import get_cells, blocks
 
 def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
@@ -69,11 +68,14 @@ def main() -> None:
     except ValueError as e:
         print(f"Configuration error: {e}")
         sys.exit(1)
-
+    
+    number_cells = get_cells(config["HEIGHT"], config["WIDTH"])
+    blocked_cells = blocks(config, number_cells, config.get("SEED"))
     cells = generate_kruskal_maze(
         config["WIDTH"],
         config["HEIGHT"],
-        config.get("SEED")
+        config.get("SEED"),
+        blocked_cells
     )
 
     shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
@@ -89,6 +91,7 @@ def main() -> None:
     print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
     print_maze_ascii(cells, config["ENTRY"], config["EXIT"])
     menu(config, cells, shortest_path)
+
 
 if __name__ == "__main__":
     main()
