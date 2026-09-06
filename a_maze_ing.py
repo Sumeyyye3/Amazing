@@ -1,14 +1,10 @@
 import sys
+from maze_menu import menu
 from typing import List, Dict, Tuple
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 
-
-class Colors:
-    """ANSI escape codes for colored terminal output."""
-    RESET = "\033[0m"
-    WALL = "\033[36m"
 
 
 def print_maze_ascii(
@@ -21,29 +17,29 @@ def print_maze_ascii(
     height = len(cells)  # satır sayımız
     width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
-    print(Colors.WALL + "*" + "-----*" * width + Colors.RESET)
+    print("*" + "-----*" * width)
 
     for x in range(height):
-        row_str = Colors.WALL + "|" + Colors.RESET  # satırın en solundaki dış duvar
-        bottom_str = Colors.WALL + "*" + Colors.RESET  # alt duvar çizgisinin başlangıç köşesi
+        row_str ="|"  # satırın en solundaki dış duvar
+        bottom_str ="*"  # alt duvar çizgisinin başlangıç köşesi
 
         for y in range(width):
             cell = cells[x][y]
 
             if (x, y) == entry or (x, y) == exit:
-                row_str += "  +  "
+                row_str +="  +  "
             else:
                 row_str += "     "
 
             if cell["E"]:
-                row_str += Colors.WALL + "|" + Colors.RESET
+                row_str +="|"
             else:
                 row_str += " "
 
             if cell["S"]:
-                bottom_str += Colors.WALL + "-----*" + Colors.RESET
+                bottom_str +="-----*"
             else:
-                bottom_str += "     " + Colors.WALL + "*" + Colors.RESET
+                bottom_str += "     " +"*"
 
         print(row_str)
         print(bottom_str)
@@ -71,19 +67,19 @@ def main() -> None:
         config.get("SEED")
     )
 
-    # shortest_path = Senin yazdığın en kısa yol algoritmasının return ettiğii
+    shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
     write_maze_txt(
         cells,
         config["OUTPUT_FILE"],
         config["ENTRY"],
         config["EXIT"],
-        "",  # shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
+        shortest_path,  # shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
     )
 
     print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
     print_maze_ascii(cells, config["ENTRY"], config["EXIT"])
-
+    menu(config, cells, shortest_path)
 
 if __name__ == "__main__":
     main()
