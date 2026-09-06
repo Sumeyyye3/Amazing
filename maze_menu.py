@@ -13,6 +13,25 @@ class Colors:
         "\033[94m",
     ]
 
+
+def path_cell_coords(
+    entry: Tuple[int, int], path_str: str
+) -> List[Tuple[int, int]]:
+    moves: Dict[str, Tuple[int, int]] = {
+        "N": (-1, 0),
+        "S": (1, 0),
+        "E": (0, 1),
+        "W": (0, -1),
+    }
+    row, col = entry
+    coords = [(row, col)]
+    for direction in path_str:
+        drow, dcol = moves[direction]
+        row, col = row + drow, col + dcol
+        coords.append((row, col))
+    return coords
+
+
 def create_maze(config: Dict) -> List[List[Dict[str, bool]]]:
     """Rastgele yeni bir seed ile yeni bir labirent üretir."""
     new_seed = random.randint(0, 10**9)
@@ -54,3 +73,8 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             continue
 
         write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
+
+        if show_path and shortest_path:
+            path_coords = path_cell_coords(entry, shortest_path)
+        else:
+            path_coords = None
