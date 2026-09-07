@@ -46,7 +46,9 @@ def blocks(
     blocked_xy = set()
     for row, col in blocked_cells:
         blocked_xy.add((col, row))
-
-        return generate_kruskal_maze(
+    cells = generate_kruskal_maze(
         config["WIDTH"], config["HEIGHT"], seed, blocked_xy
     )
+
+    return cells
+

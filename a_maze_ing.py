@@ -1,6 +1,6 @@
 import sys
 from maze_menu import menu
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Set
 from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
@@ -10,13 +10,13 @@ def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
     entry: Tuple[int, int],
     exit: Tuple[int, int],
+    blocked: Set[Tuple[int, int]] 
 ) -> None:
 
     height = len(cells)  # satır sayımız
     width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
 
     print("*" + "-----*" * width)
-    blocked = get_cells(height, width)
     for x in range(height):
         row_str ="|"  # satırın en solundaki dış duvar
         bottom_str ="*"  # alt duvar çizgisinin başlangıç köşesi
@@ -72,13 +72,7 @@ def main() -> None:
         sys.exit(1)
     
     number_cells = get_cells(config["HEIGHT"], config["WIDTH"])
-    blocked_cells = blocks(config, number_cells, config.get("SEED"))
-    cells = generate_kruskal_maze(
-        config["WIDTH"],
-        config["HEIGHT"],
-        config.get("SEED"),
-        blocked_cells
-    )
+    cells = blocks(config, number_cells, config.get("SEED"))
 
     shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
@@ -91,7 +85,7 @@ def main() -> None:
     )
 
     print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
-    print_maze_ascii(cells, config["ENTRY"], config["EXIT"])
+    print_maze_ascii(cells, config["ENTRY"], config["EXIT"], number_cells)
     menu(config, cells, shortest_path)
 
 
