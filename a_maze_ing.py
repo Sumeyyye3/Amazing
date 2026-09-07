@@ -24,12 +24,12 @@ def print_maze_ascii(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x, y) == entry or (x, y) == exit:
-                x += 1
-                y += 1
+            if (x, y) == entry:
+                row_str +="  +  "
+            elif (x, y) == exit:
                 row_str +="  +  "
             elif (x, y) in blocked:
-                row_str += "  +  "
+                row_str += "  #  "
             else:
                 row_str += "     "
 
