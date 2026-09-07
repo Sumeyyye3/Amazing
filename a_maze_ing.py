@@ -5,6 +5,7 @@ from parse import parse_config
 from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
 from fourty_two import get_cells, blocks
+from generate_false import generate_pacman_maze
 
 def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
@@ -70,9 +71,12 @@ def main() -> None:
     except ValueError as e:
         print(f"Configuration error: {e}")
         sys.exit(1)
-    
+
     number_cells = get_cells(config["HEIGHT"], config["WIDTH"])
-    blocked_cells = blocks(config, number_cells, config.get("SEED"))
+    if config["PERFECT"]:
+        blocked_cells = blocks(config, number_cells, config.get("SEED"))
+    elif not config["PERFECT"]:
+        blocked_cells = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], config.get("SEED"), number_cells)
 
     shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
