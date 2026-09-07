@@ -29,6 +29,4 @@ This project was developed collaboratively as part of a group assignment:
 * **Generator-Based Architecture:** Employs Python `yield` generators for step-by-step state tracking and inspection.
 DÜZENLENECEK
 ENTRY VE EXİT DÜZELTİLEMEDİİ!!!!!
-WWRİTE_MAZE TXT SÜREKLİ GÜNCELLENMİYOR SADECE 
-İLK ÇALIŞINCA YAZDIRIYOR O KADAR !!!!!!!!!!!!!!
 ---

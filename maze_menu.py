@@ -26,8 +26,7 @@ def print_with_colored(
     path_coords: Optional[List[Tuple[int, int]]],
 ) -> None:
     reset = "\033[0m"
-    entry_color = "\033[95m"
-    exit_color = "\033[95m"
+    extry_exit_color = "\033[95m"
     path_color = "\033[95m"
     number_color = "\033[1m\033[95m"
 
@@ -53,7 +52,7 @@ def print_with_colored(
             if (x, y) == entry or (x, y) == exit:
                 x += 1
                 y += 1
-                row_str += f"  {entry_color}\u2764{reset}  "
+                row_str += f"  {extry_exit_color}\u2764{reset}  "
             
             elif (x, y) in path_set:
                 row_str += f"  {path_color}.{reset}  "
@@ -104,8 +103,6 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
     width = len(cells[0])
     number_cells = get_cells(height, width)
 
-    cells = blocks(config, number_cells, config.get("SEED"))
-
     while True:
         print("\n=== A-Maze-ing ===")
         print("1. Re-generate a new maze")
@@ -134,7 +131,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
 
         write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
 
-        if show_path and shortest_path:
+        if show_path and shortest_path:  #şuanlık böyle Barış shortest pathi yazınca değiştirilecek
             shortest_coord = path_cell_coords(entry, shortest_path)
         else:
             shortest_coord = None

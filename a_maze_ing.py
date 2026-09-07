@@ -72,21 +72,20 @@ def main() -> None:
         sys.exit(1)
     
     number_cells = get_cells(config["HEIGHT"], config["WIDTH"])
-    cells = blocks(config, number_cells, config.get("SEED"))
+    blocked_cells = blocks(config, number_cells, config.get("SEED"))
 
     shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
     write_maze_txt(
-        cells,
+        blocked_cells,
         config["OUTPUT_FILE"],
         config["ENTRY"],
         config["EXIT"],
         shortest_path,  # shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
     )
 
-    print(f"Maze '{config['OUTPUT_FILE']}' dosyasına başarıyla yazıldı.")
-    print_maze_ascii(cells, config["ENTRY"], config["EXIT"], number_cells)
-    menu(config, cells, shortest_path)
+    print_maze_ascii(blocked_cells, config["ENTRY"], config["EXIT"], number_cells)
+    menu(config, blocked_cells, shortest_path)
 
 
 if __name__ == "__main__":
