@@ -18,10 +18,9 @@ def get_cells(height: int, width: int) -> Set[Tuple[int, int]]:
         "XXX",
     ]
 
-    pattern_rows = [
-        row_four + "." + row_two
-        for row_four, row_two in zip(digit_four, digit_two)
-    ]
+    pattern_rows = []
+    for row_four, row_two in zip(digit_four, digit_two):
+        pattern_rows.append(row_four + "." + row_two)
 
     pattern_height = len(pattern_rows)
     pattern_width = len(pattern_rows[0])
@@ -30,7 +29,6 @@ def get_cells(height: int, width: int) -> Set[Tuple[int, int]]:
     start_col = (width - pattern_width) // 2
 
     if start_row < 0 or start_col < 0:
-        # Labirent "42" deseninden küçük, hiçbir şey çizmiyoruz.
         return set()
 
     marked_cells = set()
@@ -45,7 +43,10 @@ def get_cells(height: int, width: int) -> Set[Tuple[int, int]]:
 def blocks(
     config: Dict, blocked_cells: Set[Tuple[int, int]], seed: Optional[int] = None
 ) -> List[List[Dict[str, bool]]]:
-    blocked_xy = {(col, row) for (row, col) in blocked_cells}
-    return generate_kruskal_maze(
+    blocked_xy = set()
+    for row, col in blocked_cells:
+        blocked_xy.add((col, row))
+
+        return generate_kruskal_maze(
         config["WIDTH"], config["HEIGHT"], seed, blocked_xy
     )
