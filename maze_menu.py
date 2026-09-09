@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List, Optional, Tuple
-from fourty_two import get_block, blocks
+from fourty_two import get_block, get_kruskal
 from print_maze import write_maze_txt
 
 
@@ -113,7 +113,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
 
         if choice == "1":
             new_seed = random.randint(0, 10**9)
-            cells = blocks(config, number_cells, new_seed)
+            cells = get_kruskal(config, number_cells, new_seed)
             show_path = False
         elif choice == "2":
             show_path = not show_path
@@ -128,9 +128,10 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             print("Invalid choice, please enter a number between 1 and 4.")
             continue
 
-        write_maze_txt(cells, config["OUTPUT_FILE"], entry, exit, shortest_path)
+        write_maze_txt(cells, config["OUTPUT_FILE"],
+                       entry, exit, shortest_path)
 
-        if show_path and shortest_path:  #şuanlık böyle Barış shortest pathi yazınca değiştirilecek
+        if show_path and shortest_path:  # şuanlık böyle Barış shortest pathi yazınca değiştirilecek
             shortest_coord = path_cell_coords(entry, shortest_path)
         else:
             shortest_coord = None

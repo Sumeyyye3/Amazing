@@ -3,7 +3,7 @@ from maze_menu import menu
 from typing import List, Dict, Tuple, Set
 from parse import parse_config
 from print_maze import write_maze_txt
-from fourty_two import get_block, blocks
+from fourty_two import get_block, get_kruskal
 from generate_false import generate_pacman_maze
 
 
@@ -74,7 +74,7 @@ def main() -> None:
 
     number_cells = get_block(config["HEIGHT"], config["WIDTH"])
     if config["PERFECT"]:
-        blocked_cells = blocks(config, number_cells, config.get("SEED"))
+        blocked_cells = get_kruskal(config, number_cells, config.get("SEED"))
     elif not config["PERFECT"]:
         blocked_cells = generate_pacman_maze(
             config["WIDTH"], config["HEIGHT"],

@@ -40,7 +40,7 @@ def get_block(height: int, width: int) -> Set[Tuple[int, int]]:
     return marked_cells
 
 
-def blocks(
+def get_kruskal(
     config: Dict, blocked_cells: Set[Tuple[int, int]], seed: Optional[int] = None
 ) -> List[List[Dict[str, bool]]]:
     blocked_xy = set()
@@ -51,4 +51,3 @@ def blocks(
     )
 
     return cells
-
