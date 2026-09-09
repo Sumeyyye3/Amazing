@@ -5,6 +5,7 @@ from parse import parse_config
 from print_maze import write_maze_txt
 from fourty_two import get_block, get_kruskal
 from generate_false import generate_pacman_maze
+from pathfinder import find_shortest_path
 
 
 def print_maze_ascii(
@@ -74,17 +75,17 @@ def main() -> None:
 
     number_cells = get_block(config["HEIGHT"], config["WIDTH"])
     if config["PERFECT"]:
-        blocked_cells = get_kruskal(config, number_cells, config.get("SEED"))
+        maze = get_kruskal(config, number_cells, config.get("SEED"))
     elif not config["PERFECT"]:
-        blocked_cells = generate_pacman_maze(
+        maze = generate_pacman_maze(
             config["WIDTH"], config["HEIGHT"],
             config.get("SEED"), number_cells)
 
-    shortest_path = ""  # Senin yazdığın en kısa yol algoritmasının return
+    shortest_path = find_shortest_path(maze, config["ENTRY"], config["EXIT"])
     # ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
     write_maze_txt(
-        blocked_cells,
+        maze,
         config["OUTPUT_FILE"],
         config["ENTRY"],
         config["EXIT"],
@@ -93,8 +94,8 @@ def main() -> None:
     )
 
     print_maze_ascii(
-        blocked_cells, config["ENTRY"], config["EXIT"], number_cells)
-    menu(config, blocked_cells, shortest_path)
+        maze, config["ENTRY"], config["EXIT"], number_cells)
+    menu(config, maze, shortest_path)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import random
 from typing import Dict, List, Optional, Tuple
 from fourty_two import get_block, get_kruskal
 from print_maze import write_maze_txt
+from generate_false import generate_pacman_maze
 
 
 class Colors:
@@ -110,10 +111,13 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
         print("4. Quit")
 
         choice = input("Choice? (1-4): ").strip()
-
+        blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
         if choice == "1":
             new_seed = random.randint(0, 10**9)
-            cells = get_kruskal(config, number_cells, new_seed)
+            if config["PERFECT"]:
+                maze = get_kruskal(config, number_cells, new_seed)
+            elif not config["PERFECT"]:
+                maze = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], config.get("SEED"), blocked_cell)
             show_path = False
         elif choice == "2":
             show_path = not show_path
@@ -128,7 +132,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             print("Invalid choice, please enter a number between 1 and 4.")
             continue
 
-        write_maze_txt(cells, config["OUTPUT_FILE"],
+        write_maze_txt(maze, config["OUTPUT_FILE"],
                        entry, exit, shortest_path)
 
         if show_path and shortest_path:  # şuanlık böyle Barış shortest pathi yazınca değiştirilecek

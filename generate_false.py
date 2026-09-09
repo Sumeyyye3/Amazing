@@ -1,22 +1,20 @@
-import random
-from typing import Any, Dict, List, Optional, Set, Tuple
-
 from kruskal import generate_kruskal_maze
+from typing import Optional
 
 
-def open_wall(cells: Maze, c1: Coord, c2: Coord, w1: str, w2: str) -> None:
+def open_wall(cells, c1, c2, w1: str, w2: str) -> None:
     """İki komşu hücre arasındaki ortak duvarı açar (her iki taraf da)."""
     cells[c1[1]][c1[0]][w1] = False
     cells[c2[1]][c2[0]][w2] = False
 
 
-def close_wall(cells: Maze, c1: Coord, c2: Coord, w1: str, w2: str) -> None:
+def close_wall(cells, c1, c2, w1: str, w2: str) -> None:
     """Açılmış bir duvarı geri kapatır (rollback için)."""
     cells[c1[1]][c1[0]][w1] = True
     cells[c2[1]][c2[0]][w2] = True
 
 
-def _window_is_fully_open(cells: Maze, left: int, top: int) -> bool:
+def _window_is_fully_open(cells, left: int, top: int) -> bool:
     """(left, top) sol-üst köşeli 3x3'lük pencerenin 12 iç duvarının
     tamamen açık olup olmadığını kontrol eder.
     """
@@ -32,8 +30,8 @@ def _window_is_fully_open(cells: Maze, left: int, top: int) -> bool:
 
 
 def _affected_windows(
-    c1: Coord, c2: Coord, width: int, height: int
-) -> List[Tuple[int, int]]:
+    c1, c2, width: int, height: int
+):
     """c1 ve c2'yi birlikte içeren, grid sınırları içindeki tüm 3x3
     pencerelerin (left, top) köşelerini döndürür.
     """
@@ -52,7 +50,7 @@ def _affected_windows(
 
 
 def is_three_x_three(
-    cells: Maze, width: int, height: int, c1: Coord, c2: Coord
+    cells, width, height, c1, c2
 ) -> bool:
     """c1-c2 arasındaki duvar açıldığında yasak "3x3 açık alan"
     oluşup oluşmadığını kontrol eder.
@@ -63,16 +61,15 @@ def is_three_x_three(
     return False
 
 
-def open_wall_count(cell: Cell) -> int:
+def open_wall_count(cell) -> int:
     """Bir hücrenin kaç yönünün açık (duvarsız) olduğunu sayar."""
     return sum(1 for is_closed in cell.values() if not is_closed)
-
 
 
 def generate_pacman_maze(
     width,
     height,
-    seed,
+    seed: Optional,
     blocked_cells,
 ):
 
