@@ -28,7 +28,7 @@ def print_with_colored(
 ) -> None:
     reset = "\033[0m"
     extry_exit_color = "\033[95m"
-    path_color = "\033[95m"
+    path_color = "\033[1m\033[95m"
     number_color = "\033[1m\033[95m"
 
     height = len(cells)
@@ -39,7 +39,7 @@ def print_with_colored(
     else:
         path_set = set()
 
-    number_cells = get_block(height, width)
+    blocked_cells = get_block(height, width)
 
     print(f"{wall_color}*{'-----*' * width}{reset}")
 
@@ -56,17 +56,19 @@ def print_with_colored(
                 row_str += f"  {extry_exit_color}\u2764{reset}  "
             elif (x, y) in path_set:
                 row_str += f"  {path_color}.{reset}  "
-            elif (x, y) in number_cells:
+            elif (x, y) in blocked_cells:
                 row_str += f"  {number_color}\u2764{reset}  "
             else:
                 row_str += "     "
 
-            if cell["E"]:
+            # Doğu (E) duvarı için blocked_cells kontrolü
+            if cell["E"] or (x, y) in blocked_cells or (y + 1 < width and (x, y + 1) in blocked_cells):
                 row_str += f"{wall_color}|{reset}"
             else:
                 row_str += " "
 
-            if cell["S"]:
+            # Güney (S) duvarı için blocked_cells kontrolü
+            if cell["S"] or (x, y) in blocked_cells or (x + 1 < height and (x + 1, y) in blocked_cells):
                 bottom_str += f"{wall_color}-----*{reset}"
             else:
                 bottom_str += f"     {wall_color}*{reset}"
@@ -103,6 +105,8 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
     width = len(cells[0])
     number_cells = get_block(height, width)
 
+    maze = cells
+
     while True:
         print("\n=== A-Maze-ing ===")
         print("1. Re-generate a new maze")
@@ -117,7 +121,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             if config["PERFECT"]:
                 maze = get_kruskal(config, number_cells, new_seed)
             elif not config["PERFECT"]:
-                maze = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], config.get("SEED"), blocked_cell)
+                maze = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], new_seed, blocked_cell)
             show_path = False
         elif choice == "2":
             show_path = not show_path
@@ -141,5 +145,5 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             shortest_coord = None
 
         print_with_colored(
-            cells, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
+            maze, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
         )
