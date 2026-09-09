@@ -4,16 +4,6 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from kruskal import generate_kruskal_maze
 
 
-# Her yön için (dx, dy, karşı yön). (x, y) = (sütun, satır), kruskal.py
-# ile aynı konvansiyon.
-_DIRECTIONS: Dict[str, Tuple[int, int, str]] = {
-    "N": (0, -1, "S"),
-    "E": (1, 0, "W"),
-    "S": (0, 1, "N"),
-    "W": (-1, 0, "E"),
-}
-
-
 def open_wall(cells: Maze, c1: Coord, c2: Coord, w1: str, w2: str) -> None:
     """İki komşu hücre arasındaki ortak duvarı açar (her iki taraf da)."""
     cells[c1[1]][c1[0]][w1] = False
@@ -77,42 +67,6 @@ def open_wall_count(cell: Cell) -> int:
     """Bir hücrenin kaç yönünün açık (duvarsız) olduğunu sayar."""
     return sum(1 for is_closed in cell.values() if not is_closed)
 
-
-def _ensure_open_corridor(
-    cells: Maze,
-    width: int,
-    height: int,
-    blocked: Set[Coord],
-    cell: Coord,
-) -> None:
-    """Verilen hücrenin (köşe/merkez) dead-end olmamasını garanti eder.
-    Gerekirse -3x3 kuralını bozmayan- bir duvar daha açar.
-    """
-    x, y = cell
-    if (x, y) in blocked:
-        return
-    if open_wall_count(cells[y][x]) >= 2:
-        return
-
-    candidates = []
-    for direction, (dx, dy, opposite) in _DIRECTIONS.items():
-        nx, ny = x + dx, y + dy
-        if not (0 <= nx < width and 0 <= ny < height):
-            continue  # dış sınır duvarı, açılamaz
-        if (nx, ny) in blocked:
-            continue
-        if cells[y][x][direction]:
-            candidates.append((direction, nx, ny, opposite))
-
-    random.shuffle(candidates)
-    for direction, nx, ny, opposite in candidates:
-        cells[y][x][direction] = False
-        cells[ny][nx][opposite] = False
-        if is_three_x_three(cells, width, height, (x, y), (nx, ny)):
-            cells[y][x][direction] = True
-            cells[ny][nx][opposite] = True
-            continue
-        return
 
 
 def generate_pacman_maze(
