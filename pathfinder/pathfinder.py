@@ -16,28 +16,6 @@ _DIRECTIONS: List[Tuple[str, int, int]] = [
 
 
 def find_shortest_path(cells: Maze, entry: Coord, exit_pos: Coord) -> str:
-    """Finds the shortest path between entry and exit using BFS.
-
-    Since every move between two adjacent open cells has the same
-    cost (1), a Breadth-First Search is enough to guarantee the
-    shortest path in an unweighted maze graph.
-
-    Args:
-        cells: 2D maze grid as ``cells[y][x]``, where each cell is a
-            dict with boolean walls keyed by "N", "E", "S", "W"
-            (True means the wall is closed/present).
-        entry: (x, y) coordinates of the entry cell.
-        exit_pos: (x, y) coordinates of the exit cell.
-
-    Returns:
-        A string made of "N"/"E"/"S"/"W" letters describing the
-        shortest path from entry to exit. An empty string is
-        returned if entry and exit are the same cell.
-
-    Raises:
-        ValueError: If entry/exit are out of bounds, or if no path
-            exists between them.
-    """
     height = len(cells)
     width = len(cells[0]) if height > 0 else 0
 
@@ -80,7 +58,6 @@ def find_shortest_path(cells: Maze, entry: Coord, exit_pos: Coord) -> str:
 def _validate_coordinates(
     coord: Coord, width: int, height: int, label: str
 ) -> None:
-    """Raises ValueError if coord falls outside the maze bounds."""
     x, y = coord
     if not (0 <= x < width and 0 <= y < height):
         raise ValueError(
@@ -94,7 +71,6 @@ def _rebuild_path(
     entry: Coord,
     exit_pos: Coord,
 ) -> str:
-    """Walks the came_from chain backwards to build the move string."""
     directions: List[str] = []
     step = exit_pos
 

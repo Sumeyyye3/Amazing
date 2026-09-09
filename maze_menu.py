@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List, Optional, Tuple
-from fourty_two import get_cells, blocks
+from fourty_two import get_block, blocks
 from print_maze import write_maze_txt
 
 
@@ -38,7 +38,7 @@ def print_with_colored(
     else:
         path_set = set()
 
-    number_cells = get_cells(height, width)
+    number_cells = get_block(height, width)
 
     print(f"{wall_color}*{'-----*' * width}{reset}")
 
@@ -100,7 +100,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
 
     height = len(cells)
     width = len(cells[0])
-    number_cells = get_cells(height, width)
+    number_cells = get_block(height, width)
 
     while True:
         print("\n=== A-Maze-ing ===")

@@ -2,16 +2,16 @@ import sys
 from maze_menu import menu
 from typing import List, Dict, Tuple, Set
 from parse import parse_config
-from kruskal import generate_kruskal_maze
 from print_maze import write_maze_txt
-from fourty_two import get_cells, blocks
+from fourty_two import get_block, blocks
 from generate_false import generate_pacman_maze
+
 
 def print_maze_ascii(
     cells: List[List[Dict[str, bool]]],
     entry: Tuple[int, int],
     exit: Tuple[int, int],
-    blocked: Set[Tuple[int, int]] 
+    blocked: Set[Tuple[int, int]]
 ) -> None:
 
     height = len(cells)  # satır sayımız
@@ -19,23 +19,23 @@ def print_maze_ascii(
 
     print("*" + "-----*" * width)
     for x in range(height):
-        row_str ="|"  # satırın en solundaki dış duvar
-        bottom_str ="*"  # alt duvar çizgisinin başlangıç köşesi
+        row_str = "|"  # satırın en solundaki dış duvar
+        bottom_str = "*"  # alt duvar çizgisinin başlangıç köşesi
 
         for y in range(width):
             cell = cells[x][y]
 
             if (x, y) == entry:
-                row_str +="  +  "
+                row_str += "  +  "
             elif (x, y) == exit:
-                row_str +="  +  "
+                row_str += "  +  "
             elif (x, y) in blocked:
                 row_str += "  #  "
             else:
                 row_str += "     "
 
             if cell["E"]:
-                row_str +="|"
+                row_str += "|"
             elif (x, y) in blocked:
                 row_str += "|"
             elif (y + 1 < width) and ((x, y + 1) in blocked):
@@ -44,13 +44,13 @@ def print_maze_ascii(
                 row_str += " "
 
             if cell["S"]:
-                bottom_str +="-----*"
+                bottom_str += "-----*"
             elif (x, y) in blocked:
                 bottom_str += "-----*"
             elif (x + 1 < height) and ((x + 1, y) in blocked):
                 bottom_str += "-----*"
             else:
-                bottom_str += "     " +"*"
+                bottom_str += "     " + "*"
 
         print(row_str)
         print(bottom_str)
@@ -72,23 +72,28 @@ def main() -> None:
         print(f"Configuration error: {e}")
         sys.exit(1)
 
-    number_cells = get_cells(config["HEIGHT"], config["WIDTH"])
+    number_cells = get_block(config["HEIGHT"], config["WIDTH"])
     if config["PERFECT"]:
         blocked_cells = blocks(config, number_cells, config.get("SEED"))
     elif not config["PERFECT"]:
-        blocked_cells = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], config.get("SEED"), number_cells)
+        blocked_cells = generate_pacman_maze(
+            config["WIDTH"], config["HEIGHT"],
+            config.get("SEED"), number_cells)
 
-    shortest_path = ""  #Senin yazdığın en kısa yol algoritmasının return ettiğii
+    shortest_path = ""  # Senin yazdığın en kısa yol algoritmasının return
+    # ettiğii
     # string. Bu stringde yönleri içeren string return edecek NEESWNEE gibi
     write_maze_txt(
         blocked_cells,
         config["OUTPUT_FILE"],
         config["ENTRY"],
         config["EXIT"],
-        shortest_path,  # shortest_path gelecek buraya,ona göre maze.txtye yazdıracağız
+        shortest_path,  # shortest_path gelecek buraya,ona göre maze.txtye
+        # yazdıracağız
     )
 
-    print_maze_ascii(blocked_cells, config["ENTRY"], config["EXIT"], number_cells)
+    print_maze_ascii(
+        blocked_cells, config["ENTRY"], config["EXIT"], number_cells)
     menu(config, blocked_cells, shortest_path)
 
 

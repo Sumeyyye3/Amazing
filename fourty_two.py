@@ -2,7 +2,7 @@ from kruskal import generate_kruskal_maze
 from typing import Dict, List, Tuple, Optional, Set
 
 
-def get_cells(height: int, width: int) -> Set[Tuple[int, int]]:
+def get_block(height: int, width: int) -> Set[Tuple[int, int]]:
     digit_four = [
         "X.X",
         "X.X",
