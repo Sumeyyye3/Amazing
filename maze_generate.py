@@ -66,8 +66,7 @@ class MazeGenerator:
         elif not self.perfect:
             maze = generate_pacman_maze(cells, self.width, self.height, self.seed, blocked_cells)
 
-        shortest_path_maze = self.maze_path(maze, config)
-        return maze, shortest_path_maze
+        return maze
 
     def generate_perfect(self, config, blocked_cells):
             cells = self.generate_walls()
