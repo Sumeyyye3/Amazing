@@ -103,12 +103,6 @@ def generate_pacman_maze(
             continue
 
         walls: List[Tuple[str, int, int]] = []
-        for d in ("N", "E", "S", "W"):
-            if cells[cy][cx][d]:
-                nx, ny = cx + DX[d], cy + DY[d]
-                if 0 <= nx < width and 0 <= ny < height:
-                    if (nx, ny) not in blocked_cells:
-                        walls.append((d, nx, ny))
 
         if walls:
             d, nx, ny = random.choice(walls)

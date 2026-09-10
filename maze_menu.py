@@ -145,7 +145,6 @@ def menu(
             except ValueError:
                 current_path = ""
             show_path = False
-
         elif choice == "2":
             show_path = not show_path
         elif choice == "3":
@@ -153,7 +152,7 @@ def menu(
             if color_index >= len(Colors.wall_color_palette):
                 color_index = 0
         elif choice == "4":
-            print("Byy 💖 💖 💖")
+            print("Byy <3 <3 <3")
             break
         else:
             print("Invalid choice, please enter a number between 1 and 4.")
@@ -169,5 +168,5 @@ def menu(
             entry,
             exit,
             Colors.wall_color_palette[color_index],
-            shortest_coord
+            shortest_coord,
         )

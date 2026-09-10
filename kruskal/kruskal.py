@@ -1,34 +1,30 @@
 import random
-from typing import List, Dict, Tuple, Any, Set
+from typing import List, Dict, Tuple, Any, Set, Optional
 
 
 class SetManager:
-    """Set-Manager (Union-Find) data structure with path compression."""
+    """Path compression içeren Disjoint Set (Union-Find) yapısı."""
 
-    def __init__(self, width: int, height: int) -> None:
-        # otomatik herkes kendisinin lideri ilk başta
+    def __init__(self, height: int, width: int, blocked_cells: Set[Tuple[int, int]]) -> None:
         self.lead = {}
-        for x in range(width):
-            for y in range(height):
-                cell = (x, y)
-                self.lead[cell] = cell
+        for y in range(height):
+            for x in range(width):
+                cell = (y, x)
+                # Engelli hücreleri Union-Find kümesine dahil etmiyoruz
+                if cell not in blocked_cells:
+                    self.lead[cell] = cell
 
     def find(self, cell: Tuple[int, int]) -> Tuple[int, int]:
-        """Finds the root/representative of the set containing 'cell'."""
+        """Verilen hücrenin temsilcisini (liderini) bulur."""
         if self.lead[cell] != cell:
-            # en üst lideri bul
             self.lead[cell] = self.find(self.lead[cell])
         return self.lead[cell]
 
     def union(self, cell1: Tuple[int, int], cell2: Tuple[int, int]) -> bool:
-        """Unites sets of cell1 and cell2.
-
-        Returns True if merged, False if already in the same set.
-        """
+        """İki hücre kümesini birleştirir. Aynı kümedelerse False döner."""
         lead1 = self.find(cell1)
         lead2 = self.find(cell2)
 
-        # liderler farklıysa birleştir, aynıysa birleştirme döngü olur
         if lead1 != lead2:
             self.lead[lead2] = lead1
             return True
@@ -36,13 +32,12 @@ class SetManager:
 
 
 def generate_kruskal_maze(
-    cells,
+    cells: List[List[Dict[str, bool]]],
     width: int,
     height: int,
-    seed: Any,
-    blocked_cells: Set[Tuple[int, int]],
+    seed: Optional[Any] = None,
+    blocked_cells: Optional[Set[Tuple[int, int]]] = None,
 ) -> List[List[Dict[str, bool]]]:
-    # cells = []  # hücrelerimiz
 
     if blocked_cells is None:
         blocked_cells = set()
@@ -50,34 +45,31 @@ def generate_kruskal_maze(
     if seed is not None:
         random.seed(seed)
 
-    # for _ in range(height):  # satır sayısı kadar çalışır
-    #     row = []  # satır listesi oluşturur
-    #     for _ in range(width):  # sütun sayısı kadar çalışır
-    #         cell = {"N": True, "E": True, "S": True, "W": True}
-    #         row.append(cell)
-    #     cells.append(row)
-
-    # yıkılabilecek potansiyel duvarları konumlarıyla birlikte
-    # tespit edip bu listeye atıyoruz
     walls = []
-    for y in range(height):  # satırlar (x, y) x:satır indexi
-        for x in range(width):  # sütunlar (x, y) y:sütun indexi
-            if (x, y) in blocked_cells:
+    # y: satır indeksi (0..height-1), x: sütun indeksi (0..width-1)
+    # Hücreler (y, x) formatında işlenir.
+    for y in range(height):
+        for x in range(width):
+            if (y, x) in blocked_cells:
                 continue
-            if x < width - 1 and (x + 1, y) not in blocked_cells:
-                # hücre, hücre, ortakduvar, ortakduvar
-                # diyoruz ki x,y nin E si ile x+1,y nin W si ortak duvar
-                walls.append(((x, y), (x + 1, y), "E", "W"))
-            if y < height - 1 and (x, y + 1) not in blocked_cells:
-                # aynı işlemi alt üst için yaptım
-                walls.append(((x, y), (x, y + 1), "S", "N"))
 
-    # orjinal listeyi değiştiren bir method, listeyi random karıştırır
+            # Sağ komşu (East) ile arasındaki duvar: (y, x) ve (y, x + 1)
+            if x < width - 1 and (y, x + 1) not in blocked_cells:
+                walls.append(((y, x), (y, x + 1), "E", "W"))
+
+            # Alt komşu (South) ile arasındaki duvar: (y, x) ve (y + 1, x)
+            if y < height - 1 and (y + 1, x) not in blocked_cells:
+                walls.append(((y, x), (y + 1, x), "S", "N"))
+
+    # Duvarları rastgele karıştır
     random.shuffle(walls)
 
-    sets = SetManager(width, height)
-    for (x1, y1), (x2, y2), wall1, wall2 in walls:
-        if sets.union((x1, y1), (x2, y2)):
+    # Engelli hücreleri dışarıda tutarak SetManager'ı başlat
+    sets = SetManager(height, width, blocked_cells)
+
+    for (y1, x1), (y2, x2), wall1, wall2 in walls:
+        if sets.union((y1, x1), (y2, x2)):
+            # Doğrudan (y, x) indekslemesiyle erişim
             cells[y1][x1][wall1] = False
             cells[y2][x2][wall2] = False
 
