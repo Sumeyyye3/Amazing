@@ -1,5 +1,9 @@
 .venv
-print_maze/maze_txt
-__pycache__
-poetry.lock
-.mypy_cache
+print_maze/maze.txt
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.build/
+dist/
+test_*.txt

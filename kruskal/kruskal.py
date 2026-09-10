@@ -36,12 +36,13 @@ class SetManager:
 
 
 def generate_kruskal_maze(
+    cells,
     width: int,
     height: int,
     seed: Any,
     blocked_cells: Set[Tuple[int, int]],
 ) -> List[List[Dict[str, bool]]]:
-    cells = []  # hücrelerimiz
+    # cells = []  # hücrelerimiz
 
     if blocked_cells is None:
         blocked_cells = set()
@@ -49,12 +50,12 @@ def generate_kruskal_maze(
     if seed is not None:
         random.seed(seed)
 
-    for _ in range(height):  # satır sayısı kadar çalışır
-        row = []  # satır listesi oluşturur
-        for _ in range(width):  # sütun sayısı kadar çalışır
-            cell = {"N": True, "E": True, "S": True, "W": True}
-            row.append(cell)
-        cells.append(row)
+    # for _ in range(height):  # satır sayısı kadar çalışır
+    #     row = []  # satır listesi oluşturur
+    #     for _ in range(width):  # sütun sayısı kadar çalışır
+    #         cell = {"N": True, "E": True, "S": True, "W": True}
+    #         row.append(cell)
+    #     cells.append(row)
 
     # yıkılabilecek potansiyel duvarları konumlarıyla birlikte
     # tespit edip bu listeye atıyoruz

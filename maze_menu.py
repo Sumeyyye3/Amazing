@@ -1,11 +1,17 @@
+"""Interactive terminal menu for the maze visualizer."""
+
 import random
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from fourty_two import get_block, get_kruskal
-from print_maze import write_maze_txt
 from generate_false import generate_pacman_maze
+from pathfinder import find_shortest_path
+from print_maze import write_maze_txt
+from maze_generate import MazeGenerator
 
 
 class Colors:
+    """ANSI color codes for maze wall rendering."""
+
     wall_color_palette = [
         "\033[97m",
         "\033[96m",
@@ -26,6 +32,7 @@ def print_with_colored(
     wall_color: str,
     path_coords: Optional[List[Tuple[int, int]]],
 ) -> None:
+    """Print the maze with colored walls, entry, exit, and solution path."""
     reset = "\033[0m"
     extry_exit_color = "\033[95m"
     path_color = "\033[1m\033[95m"
@@ -61,14 +68,24 @@ def print_with_colored(
             else:
                 row_str += "     "
 
-            # Doğu (E) duvarı için blocked_cells kontrolü
-            if cell["E"] or (x, y) in blocked_cells or (y + 1 < width and (x, y + 1) in blocked_cells):
+            # East (E) wall check
+            has_e_wall = (
+                cell["E"]
+                or (x, y) in blocked_cells
+                or (y + 1 < width and (x, y + 1) in blocked_cells)
+            )
+            if has_e_wall:
                 row_str += f"{wall_color}|{reset}"
             else:
                 row_str += " "
 
-            # Güney (S) duvarı için blocked_cells kontrolü
-            if cell["S"] or (x, y) in blocked_cells or (x + 1 < height and (x + 1, y) in blocked_cells):
+            # South (S) wall check
+            has_s_wall = (
+                cell["S"]
+                or (x, y) in blocked_cells
+                or (x + 1 < height and (x + 1, y) in blocked_cells)
+            )
+            if has_s_wall:
                 bottom_str += f"{wall_color}-----*{reset}"
             else:
                 bottom_str += f"     {wall_color}*{reset}"
@@ -80,6 +97,7 @@ def print_with_colored(
 def path_cell_coords(
     entry: Tuple[int, int], path_str: str
 ) -> List[Tuple[int, int]]:
+    """Convert path direction string (N, E, S, W) to list of coordinates."""
     moves: Dict[str, Tuple[int, int]] = {
         "N": (-1, 0),
         "S": (1, 0),
@@ -95,7 +113,12 @@ def path_cell_coords(
     return coords
 
 
-def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -> None:
+def menu(
+    config: Dict[str, Any],
+    cells: List[List[Dict[str, bool]]],
+    shortest_path: str,
+) -> None:
+    """Run interactive visualizer menu loop."""
     entry = config["ENTRY"]
     exit = config["EXIT"]
     color_index = 0
@@ -106,6 +129,7 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
     number_cells = get_block(height, width)
 
     maze = cells
+    current_path = shortest_path
 
     while True:
         print("\n=== A-Maze-ing ===")
@@ -119,9 +143,15 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
         if choice == "1":
             new_seed = random.randint(0, 10**9)
             if config["PERFECT"]:
-                maze = get_kruskal(config, number_cells, new_seed)
-            elif not config["PERFECT"]:
-                maze = generate_pacman_maze(config["WIDTH"], config["HEIGHT"], new_seed, blocked_cell)
+                maze = gene
+            else:
+                maze = generate_pacman_maze(
+                    config["WIDTH"], config["HEIGHT"], new_seed, blocked_cell
+                )
+            try:
+                current_path = find_shortest_path(maze, entry, exit)
+            except ValueError:
+                current_path = ""
             show_path = False
         elif choice == "2":
             show_path = not show_path
@@ -136,14 +166,19 @@ def menu(config: Dict, cells: List[List[Dict[str, bool]]], shortest_path: str) -
             print("Invalid choice, please enter a number between 1 and 4.")
             continue
 
-        write_maze_txt(maze, config["OUTPUT_FILE"],
-                       entry, exit, shortest_path)
+        write_maze_txt(
+            maze, config["OUTPUT_FILE"], entry, exit, current_path
+        )
 
-        if show_path and shortest_path:  # şuanlık böyle Barış shortest pathi yazınca değiştirilecek
-            shortest_coord = path_cell_coords(entry, shortest_path)
+        if show_path and current_path:
+            shortest_coord = path_cell_coords(entry, current_path)
         else:
             shortest_coord = None
 
         print_with_colored(
-            maze, entry, exit, Colors.wall_color_palette[color_index], shortest_coord
+            maze,
+            entry,
+            exit,
+            Colors.wall_color_palette[color_index],
+            shortest_coord,
         )

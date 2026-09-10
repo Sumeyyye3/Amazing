@@ -20,13 +20,22 @@ debug:
 	PYTHONASYNCIODEBUG=1 $(POETRY) run $(PYTHON) -m pdb $(APP)
 
 lint:
-	$(POETRY) run flake8 *.py
-	$(POETRY) run mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
-	@echo "No flake8 or mypy errors found."
+	flake8 .
+	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+
+lint-strict:
+	flake8 .
+	mypy . --strict
+
+package:
+	pip install build || uv tool install build || true
+	python3 -m build --outdir .
+
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
-	rm -rf .pytest_cache .build .mypy_cache
+	rm -rf .pytest_cache .build .mypy_cache dist
+
 
 fclean: clean
 	$(POETRY) env remove --all 2>/dev/null || true
