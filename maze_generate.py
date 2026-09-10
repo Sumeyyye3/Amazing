@@ -1,4 +1,5 @@
 import random
+import sys
 from typing import Optional
 from print_maze import write_maze_txt
 from kruskal import generate_kruskal_maze
@@ -55,7 +56,7 @@ class MazeGenerator:
             print(f"Warning: {e}")
         shortest_path = ""
 
-    def generate(self, config, blocked_cells,shortest_path):
+    def generate(self, config, blocked_cells):
         cells = self.generate_walls()
         if self.perfect:
             maze = get_kruskal(cells, config, blocked_cells, self.seed)
@@ -64,4 +65,16 @@ class MazeGenerator:
 
         shortest_path_maze = self.maze_path(maze, config)
         return maze, shortest_path_maze
+
+    def generate_perfect(self, config, blocked_cells):
+            cells = self.generate_walls()
+            maze = get_kruskal(cells, config, blocked_cells, self.seed)
+            shortest_path_maze = self.maze_path(maze, config)
+            return maze, shortest_path_maze
+
+    def generate_not_perfect(self, config, blocked_cells):
+            cells = self.generate_walls()
+            maze = generate_pacman_maze(cells, config, blocked_cells, self.seed)
+            shortest_path_maze = self.maze_path(maze, config)
+            return maze, shortest_path_maze
 

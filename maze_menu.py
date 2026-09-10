@@ -115,21 +115,12 @@ def path_cell_coords(
 
 def menu(
     config: Dict[str, Any],
-    cells: List[List[Dict[str, bool]]],
-    shortest_path: str,
 ) -> None:
     """Run interactive visualizer menu loop."""
     entry = config["ENTRY"]
     exit = config["EXIT"]
     color_index = 0
     show_path = False
-
-    height = len(cells)
-    width = len(cells[0])
-    number_cells = get_block(height, width)
-
-    maze = cells
-    current_path = shortest_path
 
     while True:
         print("\n=== A-Maze-ing ===")
@@ -142,14 +133,15 @@ def menu(
         blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
         if choice == "1":
             new_seed = random.randint(0, 10**9)
+            generator = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["PERFECT"], new_seed)
             if config["PERFECT"]:
-                maze = gene
+                maze, shortest_path =generator.generate_perfect(config, blocked_cell)
             else:
-                maze = generate_pacman_maze(
-                    config["WIDTH"], config["HEIGHT"], new_seed, blocked_cell
+                maze, shortest_path = generator.generate_not_perfect(
+                    config, blocked_cell
                 )
             try:
-                current_path = find_shortest_path(maze, entry, exit)
+                current_path = shortest_path
             except ValueError:
                 current_path = ""
             show_path = False
@@ -166,10 +158,6 @@ def menu(
             print("Invalid choice, please enter a number between 1 and 4.")
             continue
 
-        write_maze_txt(
-            maze, config["OUTPUT_FILE"], entry, exit, current_path
-        )
-
         if show_path and current_path:
             shortest_coord = path_cell_coords(entry, current_path)
         else:
@@ -180,5 +168,5 @@ def menu(
             entry,
             exit,
             Colors.wall_color_palette[color_index],
-            shortest_coord,
+            shortest_coord
         )

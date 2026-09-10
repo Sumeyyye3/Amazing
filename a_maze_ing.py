@@ -4,7 +4,7 @@ import sys
 # from typing import Optional
 # import random
 from typing import Dict, List, Set, Tuple
-# from fourty_two import get_block, get_kruskal
+from fourty_two import get_block
 # from generate_false import generate_pacman_maze
 from maze_menu import menu
 from parse import parse_config
@@ -103,10 +103,8 @@ def main() -> None:
     #         blocked_cells,
     #     )
 
-
-
     print_maze_ascii(maze, config["ENTRY"], config["EXIT"], blocked_cells)
-    menu(config, maze, shortest_path)
+    menu(config)
 
 
 if __name__ == "__main__":
