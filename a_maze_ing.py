@@ -92,7 +92,7 @@ def main() -> None:
         )
 
 
-    maze, shortest_path = generator.generate(config, blocked_cells)
+    maze, _ = generator.generate(config, blocked_cells)
     # if config["PERFECT"]:
     #     maze = get_kruskal(config, blocked_cells, config.get("SEED"))
     # else:

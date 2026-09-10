@@ -19,6 +19,7 @@ class MazeGenerator:
         self.width = width
         self.height = height
         self.perfect = perfect
+        self.seed = seed
         if seed is not None:
             random.seed(seed)
         else:
@@ -35,7 +36,15 @@ class MazeGenerator:
         return cells
 
 
-    def maze_path(maze, config):
+    def maze_path(self, maze, config):
+        try:
+            shortest_path = find_shortest_path(
+                maze, config["ENTRY"], config["EXIT"]
+            )
+        except ValueError as e:
+            print(f"Warning: {e}")
+        shortest_path = ""
+
         try:
             write_maze_txt(
                 maze,
@@ -48,13 +57,7 @@ class MazeGenerator:
             print(f"Error writing to output file '{config['OUTPUT_FILE']}': {e}")
             sys.exit(1)
 
-        try:
-            shortest_path = find_shortest_path(
-                maze, config["ENTRY"], config["EXIT"]
-            )
-        except ValueError as e:
-            print(f"Warning: {e}")
-        shortest_path = ""
+        return shortest_path
 
     def generate(self, config, blocked_cells):
         cells = self.generate_walls()
@@ -74,7 +77,9 @@ class MazeGenerator:
 
     def generate_not_perfect(self, config, blocked_cells):
             cells = self.generate_walls()
-            maze = generate_pacman_maze(cells, config, blocked_cells, self.seed)
+            maze = generate_pacman_maze(
+                cells, config["WIDTH"], config["HEIGHT"], self.seed, blocked_cells
+                )
             shortest_path_maze = self.maze_path(maze, config)
             return maze, shortest_path_maze
 
