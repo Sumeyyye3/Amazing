@@ -102,7 +102,7 @@ def path_cell_coords(
         "N": (-1, 0),
         "S": (1, 0),
         "E": (0, 1),
-        "W": (0, -1),
+        "W": (0, -1)
     }
     row, col = entry
     coords = [(row, col)]

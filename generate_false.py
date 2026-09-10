@@ -14,11 +14,7 @@ def _has_3x3_open(
     width: int,
     height: int,
 ) -> bool:
-    """Check if there are any 3x3 open areas without internal walls.
-
-    Returns:
-        True if a 3x3 area with NO internal walls exists.
-    """
+    """Check if there are any 3x3 open areas without internal walls."""
     for y in range(height - 2):
         for x in range(width - 2):
             is_open = True
@@ -69,18 +65,13 @@ def _close_wall(
 
 
 def generate_pacman_maze(
-    cells,
+    cells: List[List[Dict[str, bool]]],
     width: int,
     height: int,
-    seed: Optional[Any],
+    seed: Optional[Any] = None,
     blocked_cells: Optional[Set[Tuple[int, int]]] = None,
 ) -> List[List[Dict[str, bool]]]:
-    """Generate an imperfect maze usable by a Pac-Man-like game.
-
-    Uses Kruskal algorithm as the base spanning tree, then adds loops
-    while avoiding any 3x3 open areas, ensuring full connectivity,
-    open corners and center, and minimizing dead-ends.
-    """
+    """Generate an imperfect maze usable by a Pac-Man-like game."""
     if blocked_cells is None:
         blocked_cells = set()
 
@@ -89,7 +80,7 @@ def generate_pacman_maze(
     if seed is not None:
         random.seed(seed)
 
-    # 1. Add loops by knocking down some internal walls (at least 2 loops)
+    # 1. Add loops by knocking down some internal walls
     target_loops = max(3, (width * height) // 15)
     removed_walls = 0
     attempts = 0
@@ -99,10 +90,18 @@ def generate_pacman_maze(
         attempts += 1
         cx = random.randint(0, width - 1)
         cy = random.randint(0, height - 1)
+        
         if (cx, cy) in blocked_cells:
             continue
 
+        # Kapalı olan ve bloklanmamış komşulara giden duvarları topla
         walls: List[Tuple[str, int, int]] = []
+        for d in ("N", "E", "S", "W"):
+            if cells[cy][cx][d]:  # Duvar kapalıysa
+                nx, ny = cx + DX[d], cy + DY[d]
+                if 0 <= nx < width and 0 <= ny < height:
+                    if (nx, ny) not in blocked_cells:
+                        walls.append((d, nx, ny))
 
         if walls:
             d, nx, ny = random.choice(walls)
@@ -122,9 +121,9 @@ def generate_pacman_maze(
             for x in range(width):
                 if (x, y) in blocked_cells:
                     continue
+                
                 # Count closed walls
-                closed_count = sum(1 for d in ("N", "E", "S", "W")
-                                   if cells[y][x][d])
+                closed_count = sum(1 for d in ("N", "E", "S", "W") if cells[y][x][d])
                 if closed_count == 3:  # Dead-end cell
                     possible_opens: List[Tuple[str, int, int]] = []
                     for d in ("N", "E", "S", "W"):
