@@ -22,8 +22,6 @@ class MazeGenerator:
         self.seed = seed
         if seed is not None:
             random.seed(seed)
-        else:
-            self.seed = seed
 
     def generate_walls(self):
         cells = []
@@ -43,7 +41,7 @@ class MazeGenerator:
             )
         except ValueError as e:
             print(f"Warning: {e}")
-        shortest_path = ""
+            shortest_path = ""
 
         try:
             write_maze_txt(

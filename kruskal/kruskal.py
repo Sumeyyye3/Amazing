@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict, Tuple, Any, Set
+from typing import List, Dict, Tuple, Optional, Set
 
 
 class SetManager:
@@ -39,7 +39,7 @@ def generate_kruskal_maze(
     cells,
     width: int,
     height: int,
-    seed: Any,
+    seed: Optional[int],
     blocked_cells: Set[Tuple[int, int]],
 ) -> List[List[Dict[str, bool]]]:
     # cells = []  # hücrelerimiz

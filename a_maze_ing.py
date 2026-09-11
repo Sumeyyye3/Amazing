@@ -88,7 +88,7 @@ def main() -> None:
         width=config['WIDTH'],
         height=config['HEIGHT'],
         perfect=config['PERFECT'],
-        seed=config['SEED']
+        seed=config.get('SEED', None)
         )
 
     maze = generator.generate(config, blocked_cells)
@@ -103,7 +103,7 @@ def main() -> None:
     #     )
 
     print_maze_ascii(maze, config["ENTRY"], config["EXIT"], blocked_cells)
-    menu(config)
+    menu(maze, config)
 
 
 if __name__ == "__main__":

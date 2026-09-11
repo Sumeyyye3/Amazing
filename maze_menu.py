@@ -114,14 +114,16 @@ def path_cell_coords(
 
 
 def menu(
-    config: Dict[str, Any],
+    first_maze,
+    config: Dict[str, Any]
 ) -> None:
     """Run interactive visualizer menu loop."""
     entry = config["ENTRY"]
     exit = config["EXIT"]
     color_index = 0
     show_path = False
-
+    current_path = False
+    maze = first_maze
     while True:
         print("\n=== A-Maze-ing ===")
         print("1. Re-generate a new maze")

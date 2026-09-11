@@ -58,7 +58,7 @@ def get_kruskal(
         cells,
         config: Dict[str, Any],
         blocked_cells: Set[Tuple[int, int]],
-        seed: Optional[int] = None
+        seed: Optional[int]
 ) -> List[List[Dict[str, bool]]]:
     """Generate a perfect maze using Kruskal with blocked cells."""
     blocked_xy = set()
