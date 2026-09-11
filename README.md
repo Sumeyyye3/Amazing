@@ -1,169 +1,202 @@
 *This project has been created as part of the 42 curriculum by sumdogan, basakall.*
 
-# A-Maze-ing 🌀
+# A-Maze-ing 🌀 — This is the way
 
-A Python maze generator and visualizer developed as part of the 42 curriculum. The project generates both perfect (single-path, no loops) and imperfect (Pac-Man style, multi-loop) mazes using Kruskal's Algorithm and Disjoint-Set (Union-Find) structures. It features interactive terminal visualization, pathfinding, hexadecimal serialization, and a reusable Python package (`mazegen`).
+Python ile yazılmış, konfigürasyon dosyasından okuduğu ayarlara göre labirent (maze) üreten, terminalde görselleştiren ve giriş-çıkış arasındaki en kısa yolu bulan bir proje.
 
 ---
 
 ## 📖 Description
 
-The goal of **A-Maze-ing** is to implement an algorithmic maze generator capable of reading configuration files, creating valid connected labyrinths, finding optimal paths from start to finish, and exporting results to a standardized hexadecimal format. In addition, the core maze generation logic is decoupled into an installable, reusable package for future applications.
+A-Maze-ing, verilen bir `config.txt` dosyasını okuyup iki farklı modda labirent üretebilen bir Python programıdır:
 
-Key capabilities:
-- **Perfect Mazes (`PERFECT=True`):** Exactly one path connects entry and exit, without any loops or isolated cells.
-- **Pac-Man Style Mazes (`PERFECT=False`):** Multi-route boards with at least two independent loops, fully accessible corridors, corners and center open, and minimized dead-ends.
-- **"42" Pattern:** Automatically centers a pattern of fully closed cells representing the number "42" (with graceful fallback and notification if the dimensions are too small).
-- **Interactive Terminal Visualizer:** Allows regenerating mazes, toggling solution path visibility, and rotating wall colors.
-- **Hexadecimal Export:** Encodes cell walls into 4-bit hexadecimal values followed by start/goal coordinates and the shortest path string (N, E, S, W).
+- **`PERFECT=True`** modunda, giriş ile çıkış arasında **tek bir yol** bulunan, hiç döngüsü (loop) olmayan klasik bir "perfect maze" üretir.
+- **`PERFECT=False`** modunda (varsayılan), Pac-Man tarzı bir oyun tahtası olarak kullanılabilecek, **birden fazla bağımsız rotası** olan, dört köşesi ve merkezi açık, mümkün olduğunca az çıkmaz sokağa (dead-end) sahip "oynanabilir" bir labirent üretir.
+
+Üretilen labirent hem terminalde ASCII sanatıyla gösterilir hem de hexadecimal duvar kodlamasıyla bir çıktı dosyasına yazılır. Program ayrıca girişten çıkışa giden **en kısa yolu** (BFS algoritmasıyla) hesaplar ve hem çıktı dosyasına hem de ekrana (isteğe bağlı olarak) çizer. Etkileşimli bir menü üzerinden labirent yeniden üretilebilir, çözüm yolu gösterilip gizlenebilir ve duvar renkleri değiştirilebilir.
 
 ---
 
-## 🛠️ Instructions
+## ⚙️ Instructions
 
-### Prerequisites
-- Python 3.10 or later
-- Package manager (pip, uv, or poetry)
+Proje bağımlılıkları [Poetry](https://python-poetry.org/) ile yönetiliyor ve bir `Makefile` üzerinden çalıştırılıyor.
 
-### Installation
-To install project dependencies and dev tools (flake8, mypy):
 ```bash
+# Bağımlılıkları kur (flake8, mypy, poetry sanal ortamı)
 make install
+
+# Programı varsayılan config.txt ile çalıştır
+make run
+
+# pdb ile debug modunda çalıştır
+make debug
+
+# flake8 . ve mypy . ile tüm projeyi denetle
+make lint
+
+# __pycache__, .mypy_cache gibi geçici dosyaları temizle
+make clean
+
+# Sanal ortamı da silip sıfırdan kurar (fclean + install)
+make re
 ```
 
-### Execution
-Run the main program with a configuration file:
+Manuel çalıştırmak istersen:
+
 ```bash
 python3 a_maze_ing.py config.txt
 ```
-Or using the Makefile:
-```bash
-make run
-```
 
-### Linting & Static Analysis
-Check code compliance with flake8 and mypy:
-```bash
-make lint
-```
-For strict checking:
-```bash
-make lint-strict
-```
+- `a_maze_ing.py` proje ana dosyasıdır, adı değiştirilemez.
+- `config.txt` tek argümandır; farklı bir isimle başka bir konfigürasyon dosyası da verilebilir.
 
-### Debugging & Cleanup
-To run using Python's built-in pdb debugger:
-```bash
-make debug
+Program çalıştığında labirenti terminale çizer ve şu menüyü sunar:
+
 ```
-To clean build artifacts, caches, and temporary files:
-```bash
-make clean
+=== A-Maze-ing ===
+1. Re-generate a new maze
+2. Show / Hide the shortest path
+3. Rotate the wall colours
+4. Quit
 ```
 
 ---
 
-## ⚙️ Configuration File Format
+## 🗂️ Config Dosyası Formatı
 
-The configuration file defines maze parameters using a `KEY=VALUE` format. Lines starting with `#` are comments and empty lines are ignored.
+`config.txt` her satırda bir `KEY=VALUE` çifti içerir. `#` ile başlayan satırlar ve satır sonu yorumları yok sayılır.
 
-Mandatory keys:
-```ini
-WIDTH=20
-HEIGHT=15
-ENTRY=0,0
-EXIT=19,14
-OUTPUT_FILE=maze.txt
-PERFECT=True
+| Key | Açıklama | Zorunlu mu? | Örnek |
+|---|---|---|---|
+| `WIDTH` | Labirent genişliği (hücre sayısı) | ✅ | `WIDTH=15` |
+| `HEIGHT` | Labirent yüksekliği | ✅ | `HEIGHT=15` |
+| `ENTRY` | Giriş koordinatı `x,y` | ✅ | `ENTRY=1,1` |
+| `EXIT` | Çıkış koordinatı `x,y` | ✅ | `EXIT=12,13` |
+| `OUTPUT_FILE` | Çıktı dosyasının adı | ✅ | `OUTPUT_FILE=print_maze/maze.txt` |
+| `PERFECT` | `True`/`False` — tek yollu mu, oynanabilir board mu | ✅ | `PERFECT=False` |
+| `SEED` | Rastgele üretimi sabitlemek için tohum değeri | İsteğe bağlı | `SEED=42` |
+
+Repo kökündeki `config.txt`, bu formatı kullanan hazır bir örnektir:
+
+```
+WIDTH = 15
+HEIGHT = 15
+ENTRY = 1,1
+EXIT = 12,13
+OUTPUT_FILE = print_maze/maze.txt
+PERFECT = False
 ```
 
-Optional keys:
-- `SEED`: Integer seed for random number generation reproducibility.
+### Çıktı Dosyası Formatı
+
+Her hücre, hangi duvarların kapalı olduğunu tek bir hexadecimal rakamla kodlar (bit 0=Kuzey, 1=Doğu, 2=Güney, 3=Batı; bit 1 ise duvar kapalı demektir). Satırlar art arda yazılır, ardından boş bir satırdan sonra sırasıyla giriş koordinatı, çıkış koordinatı ve en kısa yolun `N`/`E`/`S`/`W` harfleriyle gösterimi gelir.
 
 ---
 
-## 🧩 Maze Generation Algorithm
+## 🧠 Maze Üretim Algoritması
 
-### Chosen Algorithm: Kruskal's Algorithm
-We chose **Randomized Kruskal's Algorithm** with a **Disjoint-Set (Union-Find)** data structure utilizing path compression.
+### Neden Kruskal + Union-Find?
 
-### Why Kruskal's Algorithm?
-1. **Uniform Spanning Tree Properties:** Kruskal's algorithm naturally builds a Minimum Spanning Tree (MST) on a grid graph, guaranteeing that a perfect maze has no loops and no unreachable regions.
-2. **Flexible Constraint Handling:** It allows excluding specific cells (such as the central "42" obstacle pattern) simply by omitting edges connected to those cells before running the algorithm.
-3. **Reproducibility and Determinism:** Shuffling edge candidates with a seeded PRNG guarantees identical maze generation across runs.
-4. **Clean Transition to Imperfect Mazes:** A Kruskal spanning tree serves as a stable base to introduce controlled loops and eliminate dead-ends for Pac-Man-style boards while strictly preventing 3x3 open areas.
+Labirent üretimi, **rastgele Kruskal algoritması** ile **Union-Find (Disjoint-Set)** veri yapısı kullanılarak yapılıyor:
+
+1. Her hücre arasındaki tüm potansiyel duvarlar bir liste haline getirilip rastgele karıştırılır.
+2. Sırayla her duvar için, duvarın ayırdığı iki hücre zaten aynı "kümede" (birbirine bağlı) değilse duvar kırılır ve iki küme birleştirilir.
+3. Sonuç, grid üzerindeki bütün hücreleri **tam olarak bir kez** birbirine bağlayan bir **spanning tree** — yani hiç döngüsü olmayan, "perfect" bir labirent.
+
+Bu algoritmayı seçme sebebimiz: Kruskal, DFS tabanlı (backtracking) üreticilere göre daha az "uzun koridor" eğilimi gösterip daha dengeli, keşfedilmesi ilginç labirentler üretiyor; Union-Find ile birleştirme/arama işlemleri neredeyse O(1) olduğu için büyük labirentlerde de hızlı kalıyor; ve **tam bağlantı garantisi** matematiksel olarak spanning tree'nin doğasından geliyor, ayrıca doğrulama gerektirmiyor.
+
+### `PERFECT=False` — Oynanabilir Board
+
+`PERFECT=False` olduğunda, önce yukarıdaki Kruskal algoritmasıyla temel bir spanning tree kuruluyor (tam bağlantı garantisi buradan geliyor), sonra üzerine iki aşamalı bir işlem uygulanıyor:
+
+1. Kalan kapalı duvarların bir kısmı rastgele kırılarak labirente **döngüler (loop)** ekleniyor — her kırılan duvarın koridoru 2 hücreden geniş bir "oda" haline getirip getirmediği kontrol ediliyor, getiriyorsa geri kapatılıyor.
+2. Ardından kalan **çıkmaz sokaklar (dead-end)** tek tek tespit edilip, yine "geniş koridor" kuralını bozmayacak şekilde birer duvar daha kırılarak elenmeye çalışılıyor.
+
+Sonuç, subject'in `maze_analyzer.py` scripti ile doğrulanan, dört köşesi ve merkezi açık, en az iki bağımsız rotası olan ve gerçek dead-end'i olmayan (bonus seviyesinde "braided") bir board.
+
+### En Kısa Yol — BFS
+
+Labirentteki her geçiş eşit maliyetli (ağırlıksız bir graf) olduğu için, en kısa yolu bulmak için **BFS (Breadth-First Search)** kullanıyoruz. BFS, girişten başlayıp katman katman yayılarak bir hücreye ilk ulaştığı anda oraya olan en kısa yoldan gelmiş olduğunu garanti eder; bu yüzden Dijkstra gibi ağırlıklı-graf algoritmalarına hiç gerek yok, BFS hem en basit hem de burada en doğru seçim.
 
 ---
 
-## 📦 Code Reusability (`mazegen`)
+## ♻️ Yeniden Kullanılabilir Kısım
 
-The maze generation logic is modularized into a standalone, installable package named `mazegen`. A pre-built wheel package (`mazegen-*.whl`) and source distribution (`mazegen-*.tar.gz`) are available in the project root.
+`kruskal/` paketindeki `generate_kruskal_maze` fonksiyonu ve `pathfinder/` paketindeki `find_shortest_path` fonksiyonu, projenin geri kalanından bağımsız, saf Python modülleri olarak yazıldı — başka bir projeye doğrudan kopyalanıp import edilebilir:
 
-### Installing the Package
-```bash
-pip install mazegen-1.0.0-py3-none-any.whl
-```
-
-### Python API Usage Example
 ```python
-from mazegen import MazeGenerator
+from kruskal import generate_kruskal_maze
+from pathfinder import find_shortest_path
 
-# 1. Instantiate with custom parameters
-generator = MazeGenerator(
-    width=20,
-    height=15,
-    seed=42,
-    perfect=True,
-    entry=(0, 0),
-    exit_pos=(19, 14)
-)
+# Sabit bir seed ile üret, böylece her çalıştırmada aynı labirent çıkar
+maze = generate_kruskal_maze(width=10, height=10, seed=42, blocked_cells=set())
 
-# 2. Generate and access maze structure (2D list of cell wall dictionaries)
-cells = generator.generate(include_42=True)
-
-# 3. Access the solution path (e.g., 'EESSES...')
-solution_path = generator.get_solution()
-print("Solution Path:", solution_path)
+# maze, cells[y][x] formatında bir liste; her hücre {"N","E","S","W"} anahtarlı
+# bir dict, True ise o yönde duvar kapalı demektir.
+path = find_shortest_path(maze, entry=(0, 0), exit_pos=(9, 9))
+# path, "EESSN..." gibi bir string döner
 ```
 
----
-
-## 👥 Team & Project Management
-
-### Roles & Responsibilities
-- **Sümeyye Doğan (`sumdogan`):**
-  - Core Maze Generation: Kruskal algorithm implementation with path-compressed Union-Find.
-  - Pattern Integration: Designing and positioning the central "42" obstacle pattern.
-  - Imperfect Maze Logic: Developing loop addition and dead-end reduction for Pac-Man mode.
-  - Configuration Parser: Parsing, type validation, and boundary verification of `config.txt`.
-
-- **Barış Sakallı (`basakall`):**
-  - Pathfinding: BFS-based shortest path finder computing cardinal directions (N, E, S, W).
-  - Visualization: Terminal display formatting, ANSI color palettes, and interactive menu.
-  - Automation & Packaging: Makefile workflow, packaging setup (`mazegen`), and static analysis.
-
-### Anticipated Planning & Evolution
-- **Initial Plan:** Focus on perfect maze generation and basic ASCII rendering first, followed by pathfinding and file export.
-- **Evolution:** During testing with `maze_analyzer.py`, we identified the necessity of strict dead-end elimination and loop validation for `PERFECT=False` mode. We refactored edge operations to prevent 3x3 open areas while preserving the "42" closed cells.
-- **What Worked Well:** The separation into modular packages (`kruskal`, `pathfinder`, `parse`, `print_maze`, `mazegen`) enabled parallel development and straightforward unit testing.
-- **What Could Be Improved:** Initial coordinate indexing differences between row/col and x/y required careful alignment across modules.
-
-### Tools Used
-- Python 3.10+ standard libraries (`random`, `typing`, `collections`, `sys`)
-- Static analysis & linting: `flake8`, `mypy`
-- Build & environment tooling: `poetry`, `uv`
-- Testing & validation: `maze_analyzer.py`
+`blocked_cells` parametresiyle belirli hücreler (örn. "42" deseni) tamamen kapalı/dokunulmamış bırakılabilir.
 
 ---
 
-## 📚 Resources & AI Usage
+## 👥 Takım ve Proje Yönetimi
 
-### Resources
-- Jamis Buck, *Mazes for Programmers: Code Your Own Twisty Little Passages*
-- Graph Theory & Spanning Trees: Kruskal's Algorithm & Disjoint-Set Union (DSU) documentation
-- PEP 8 (Style Guide for Python Code) & PEP 257 (Docstring Conventions)
+### Roller
 
-### AI Usage Disclosure
-- **Assistance Scope:** AI was utilized to audit PEP 8 / PEP 257 formatting, resolve flake8 line-length constraints, generate `mazegen` packaging metadata, and construct dead-end pruning passes compliant with `maze_analyzer.py`.
-- **Review Process:** All code and logic were manually reviewed, validated with static linters, and verified using `maze_analyzer.py` test runs.
+**Sümeyye Doğan**
+- Kruskal algoritmasının ve Union-Find veri yapısının yazımı (`kruskal/kruskal.py`)
+- `PERFECT=True` modunun uçtan uca kurulması
+- `config.txt` parse işlemleri (`parse/parse_config.py`) — zorunlu alan kontrolü, tip dönüşümü, sınır doğrulaması
+- Repo'daki `config.txt` örneğinin hazırlanması
+- `Makefile`'ın ilk yazımı
 
+**Barış Sakallı**
+- En kısa yol algoritmasının (BFS, `pathfinder/pathfinder.py`) tasarımı ve yazımı
+- `Makefile` ve `.gitignore` üzerinde iyileştirmeler
+- `README.md`'nin hazırlanması
+- "42" deseninin labirente yerleştirilmesi (`fourty_two.py`)
+
+**Ortak**
+- `PERFECT=False` modunun (`generate_false.py`) — döngü ekleme ve çıkmaz sokak azaltma algoritması — birlikte tasarlanması ve yazılması
+
+### Planlama Süreci
+
+Proje, subject'in Chapter III–VIII'inde sıralanan zorunlu adımlar takip edilerek aşamalı şekilde ilerledi: önce config parse + temel Kruskal üretimi (mandatory çekirdek), ardından en kısa yol algoritması, sonra "42" deseni ve `PERFECT=False` modu, en son da terminal menüsü ve görsel iyileştirmeler. İlerledikçe iki kişinin ayrı yazdığı modüller birleştirilirken koordinat sistemi (grid'in `(satır, sütun)` mi yoksa config'in `(x, y)` mi kullandığı) konusunda birkaç kez uyumsuzluk çıktı; bunlar test edilerek tek tek bulunup düzeltildi.
+
+### Neler İyi Gitti / Neler Geliştirilebilir
+
+İyi giden: Kruskal + Union-Find çekirdeği baştan sağlam kurulduğu için üzerine `PERFECT=False` ve "42" deseni gibi katmanları eklemek nispeten kolay oldu; `pathfinder` ve `kruskal` modüllerinin bağımsız/yeniden kullanılabilir yazılması entegrasyonu basitleştirdi.
+
+Geliştirilebilir: Farklı modüllerde koordinatların bazen `(x, y)`, bazen `(row, col)` olarak tutulması entegrasyon sırasında birkaç bug'a yol açtı — ileride tek bir konvansiyonun proje genelinde (belki tip takma adlarıyla) daha baştan netleştirilmesi zaman kazandırırdı. Ayrıca `flake8`/`mypy` denetimlerinin her modülde en başından itibaren (yalnızca sona bırakılmadan) çalıştırılması, stil ve tip hatalarının erken yakalanmasını sağlardı.
+
+### Kullanılan Araçlar
+
+- **Poetry** — bağımlılık ve sanal ortam yönetimi
+- **flake8** ve **mypy** (`--disallow-untyped-defs --check-untyped-defs` bayraklarıyla) — kod kalitesi ve tip denetimi
+- **Claude (Anthropic)** — bkz. aşağıdaki Resources bölümü
+
+---
+
+## 📚 Resources
+
+- [Kruskal's Algorithm — Wikipedia](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm)
+- [Disjoint-Set / Union-Find veri yapısı — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
+- [Breadth-First Search — Wikipedia](https://en.wikipedia.org/wiki/Breadth-first_search)
+- [Maze generation algorithms — genel karşılaştırma](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
+- [PEP 257 — Docstring Conventions](https://peps.python.org/pep-0257/)
+- [flake8 dokümantasyonu](https://flake8.pycqa.org/)
+- [mypy dokümantasyonu](https://mypy.readthedocs.io/)
+
+### Yapay Zeka Kullanımı
+
+Bu proje boyunca **Claude (Anthropic)** aşağıdaki görevler için kullanıldı:
+
+- En kısa yol modülünün (`pathfinder/pathfinder.py`, BFS algoritması) yazımı ve testlerinin (`tests/test_pathfinder.py`) hazırlanması.
+- `PERFECT=False` (`generate_false.py`) algoritmasının subject'in gereksinimlerine (bağımsız rota sayısı, köşe/merkez açıklığı, maksimum koridor genişliği) göre gözden geçirilmesi ve iyileştirilmesi.
+- Kod incelemesi: projenin subject'e (bu README'nin ilham aldığı PDF) uygunluğunun bölüm bölüm kontrol edilmesi, ve tespit edilen bug'ların (koordinat sistemi uyuşmazlıkları, eksik tip belirteçleri, stil hataları) düzeltilmesi.
+- `flake8`/`mypy` hatalarının giderilmesi ve `Makefile`'ın tüm projeyi (`flake8 .`) taraması için düzeltilmesi.
+- Bu `README.md` dosyasının, subject'in Chapter VII'de listelediği zorunlu bölümlere göre taslağının hazırlanması.
+
+Tüm kod, üretilmeden önce takım üyeleri tarafından okunup anlaşıldı; yapay zeka bir kod yazma/kontrol aracı olarak kullanıldı, tasarım kararları (algoritma seçimi, veri yapıları) takım tarafından alındı.
