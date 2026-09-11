@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mazegen"
+name = "a_maze_ing"
 version = "1.0.0"
 description = "Reusable maze generator package using Kruskal algorithm"
 authors = [
@@ -8,7 +8,6 @@ authors = [
 ]
 readme = "README.md"
 packages = [
-    { include = "mazegen" },
     { include = "kruskal" },
     { include = "pathfinder" }
 ]

@@ -64,7 +64,7 @@ class MazeGenerator:
         if self.perfect:
             maze = get_kruskal(cells, config, blocked_cells, self.seed)
         elif not self.perfect:
-            maze = generate_pacman_maze(cells, self.width, self.height, self.seed, blocked_cells)
+            maze = generate_pacman_maze(config, cells, self.width, self.height, self.seed, blocked_cells)
 
         return maze
 
@@ -77,8 +77,7 @@ class MazeGenerator:
     def generate_not_perfect(self, config, blocked_cells):
             cells = self.generate_walls()
             maze = generate_pacman_maze(
-                cells, config["WIDTH"], config["HEIGHT"], self.seed, blocked_cells
+                config, cells, config["WIDTH"], config["HEIGHT"], self.seed, blocked_cells
                 )
             shortest_path_maze = self.maze_path(maze, config)
             return maze, shortest_path_maze
-

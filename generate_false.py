@@ -3,6 +3,7 @@
 import random
 from typing import Any, Dict, List, Optional, Set, Tuple
 from kruskal import generate_kruskal_maze
+from fourty_two import get_kruskal
 
 OPPOSITE: Dict[str, str] = {"N": "S", "E": "W", "S": "N", "W": "E"}
 DX: Dict[str, int] = {"N": 0, "E": 1, "S": 0, "W": -1}
@@ -65,17 +66,18 @@ def _close_wall(
 
 
 def generate_pacman_maze(
+    config,
     cells: List[List[Dict[str, bool]]],
     width: int,
     height: int,
     seed: Optional[Any] = None,
-    blocked_cells: Optional[Set[Tuple[int, int]]] = None,
+    blocked_cells: Optional[Set[Tuple[int, int]]] = None
 ) -> List[List[Dict[str, bool]]]:
     """Generate an imperfect maze usable by a Pac-Man-like game."""
     if blocked_cells is None:
         blocked_cells = set()
 
-    cells = generate_kruskal_maze(cells, width, height, seed, blocked_cells)
+    cells = get_kruskal(cells,config, blocked_cells, seed)
 
     if seed is not None:
         random.seed(seed)
