@@ -134,7 +134,9 @@ def menu(
         choice = input("Choice? (1-4): ").strip()
         blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
         if choice == "1":
-            new_seed = random.randint(0, 10**9)
+            new_seed = config["SEED"]
+            if config["SEED"] is None:
+                new_seed = random.randint(0, 10**9)
             generator = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["PERFECT"], new_seed)
             if config["PERFECT"]:
                 maze, shortest_path =generator.generate_perfect(config, blocked_cell)
