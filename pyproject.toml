@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "a_maze_ing"
+name = "mazegen"
 version = "1.0.0"
-description = "Reusable maze generator package using Kruskal algorithm"
+description = "Reusable maze generator package (Kruskal/Union-Find perfect mazes, Pac-Man-style playable boards, BFS shortest-path, and config parsing)"
 authors = [
     "Sumeyye Dogan <sumdogan@student.42kocaeli.com.tr>",
     "Baris Sakalli <basakall@student.42Kocaeli.com.tr>"
@@ -9,7 +9,17 @@ authors = [
 readme = "README.md"
 packages = [
     { include = "kruskal" },
-    { include = "pathfinder" }
+    { include = "pathfinder" },
+    { include = "parse" },
+    { include = "print_maze_txt.py" },
+    { include = "fourty_two.py" },
+    { include = "generate_false.py" },
+    { include = "maze_generate.py" },
+    { include = "maze_menu.py"}
+]
+exclude = [
+    "kruskal/*.pdf",
+    "parse/*.pdf"
 ]
 
 

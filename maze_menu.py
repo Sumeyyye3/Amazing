@@ -59,9 +59,6 @@ def print_with_colored(
 
     blocked_cells = get_block(height, width)
 
-    # entry/exit (x, y) = (sütun, satır) formatında geliyor; döngüde
-    # x satır indeksi, y sütun indeksi, o yüzden (satır, sütun)'a
-    # çeviriyoruz.
     entry_row_col = (entry[1], entry[0])
     exit_row_col = (exit[1], exit[0])
 
@@ -85,7 +82,6 @@ def print_with_colored(
             else:
                 row_str += "     "
 
-            # East (E) wall check
             has_e_wall = (
                 cell["E"]
                 or (x, y) in blocked_cells
@@ -96,7 +92,6 @@ def print_with_colored(
             else:
                 row_str += " "
 
-            # South (S) wall check
             has_s_wall = (
                 cell["S"]
                 or (x, y) in blocked_cells

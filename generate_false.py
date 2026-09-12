@@ -124,16 +124,11 @@ def generate_pacman_maze(
 
     cells = get_kruskal(cells, config, blocked_cells, seed)
 
-    # get_kruskal blocked_cells'i (row, col) -> (col, row) olarak kendi
-    # içinde çeviriyor. Aşağıdaki döngüler (x, y) = (sütun, satır)
-    # kullandığı için aynı çevrimi burada da yapmalıyız, yoksa "42"
-    # deseninin hücreleri korunmayıp yeniden açılıyor.
     blocked_xy = {(col, row) for row, col in blocked_cells}
 
     if seed is not None:
         random.seed(seed)
 
-    # 1. Add loops by knocking down some internal walls
     target_loops = max(3, (width * height) // 15)
     removed_walls = 0
     attempts = 0
@@ -164,7 +159,6 @@ def generate_pacman_maze(
             else:
                 removed_walls += 1
 
-    # 2. Reduce dead-ends as much as possible (Pac-Man requirement)
     dead_ends_to_reduce = True
     reduction_passes = 0
     while dead_ends_to_reduce and reduction_passes < 10:

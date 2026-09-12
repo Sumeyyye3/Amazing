@@ -174,7 +174,7 @@ def parse_config(filepath: str) -> Dict[str, Any]:
                 )
 
             key, value = line.split("=", 1)
-            key = key.strip()
+            key = key.strip().upper()
             value = value.strip()
 
             if not key or not value:

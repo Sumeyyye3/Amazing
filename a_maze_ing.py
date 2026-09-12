@@ -97,7 +97,43 @@ def main() -> None:
         print(f"Unexpected error while reading configuration: {e}")
         sys.exit(1)
 
+    # (width-1) * (height-1) is the maximum number of independent loops
+    # a grid of this size could ever have. If it's below 2, a
+    # PERFECT=False (Pac-Man-style) board with "at least two
+    # independent routes" is structurally impossible, regardless of
+    # the generation algorithm.
+    max_possible_loops = (config["WIDTH"] - 1) * (config["HEIGHT"] - 1)
+    if not config["PERFECT"] and max_possible_loops < 2:
+        print(
+            "Configuration error: maze size "
+            f"{config['WIDTH']}x{config['HEIGHT']} is too small for "
+            "PERFECT=False (a playable board needs at least two "
+            "independent loops, which this size can never provide). "
+            "Use a larger maze or set PERFECT=True."
+        )
+        sys.exit(1)
+
     blocked_cells = get_block(config["HEIGHT"], config["WIDTH"])
+
+    # entry/exit (x, y) formatında; blocked_cells (row, col) formatında,
+    # bu yüzden karşılaştırmadan önce çeviriyoruz.
+    entry_row_col = (config["ENTRY"][1], config["ENTRY"][0])
+    exit_row_col = (config["EXIT"][1], config["EXIT"][0])
+
+    if entry_row_col in blocked_cells:
+        print(
+            f"Configuration error: ENTRY {config['ENTRY']} falls "
+            "inside the '42' pattern."
+        )
+        sys.exit(1)
+
+    if exit_row_col in blocked_cells:
+        print(
+            f"Configuration error: EXIT {config['EXIT']} falls "
+            "inside the '42' pattern."
+        )
+        sys.exit(1)
+
     generator = MazeGenerator(
         width=config['WIDTH'],
         height=config['HEIGHT'],
