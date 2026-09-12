@@ -2,7 +2,19 @@ from typing import Dict, Any, Tuple
 
 
 def parse_coordinates(coord_str: str, key_name: str) -> Tuple[int, int]:
-    """Parses 'x,y' string into a tuple of integers."""
+    """Parses 'x,y' string into a tuple of integers.
+
+    Args:
+        coord_str: The raw "x,y" string to parse.
+        key_name: The config key this value belongs to, used in the
+            error message if parsing fails.
+
+    Returns:
+        The parsed (x, y) tuple of integers.
+
+    Raises:
+        ValueError: If `coord_str` is not in "x,y" format.
+    """
     try:
         parts = coord_str.split(",")
         if len(parts) != 2:
@@ -17,8 +29,20 @@ def parse_coordinates(coord_str: str, key_name: str) -> Tuple[int, int]:
 
 def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     """Checks required keys are present and converts raw string values
-
     to their proper types (int, tuple, bool).
+
+    Args:
+        dict_config: Raw string key/value pairs read from the
+            configuration file.
+
+    Returns:
+        A dict with `WIDTH`, `HEIGHT` (int), `ENTRY`, `EXIT` (tuples),
+        `PERFECT` (bool), `OUTPUT_FILE` (str), and `SEED` (int or
+        None) properly typed.
+
+    Raises:
+        ValueError: If a mandatory key is missing or a value cannot
+            be converted to its expected type.
     """
     required_keys = {
         "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
@@ -70,7 +94,16 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
 
 
 def max_coordinat_values(config: Dict[str, Any]) -> None:
-    """Checks ENTRY/EXIT are within maze bounds and differ from each other."""
+    """Checks ENTRY/EXIT are within maze bounds and differ from each other.
+
+    Args:
+        config: Configuration dict already converted to proper types,
+            containing `WIDTH`, `HEIGHT`, `ENTRY`, `EXIT`.
+
+    Raises:
+        ValueError: If ENTRY or EXIT is out of bounds, or if they are
+            the same coordinate.
+    """
     entry_x, entry_y = config["ENTRY"]
     exit_x, exit_y = config["EXIT"]
 
@@ -92,7 +125,18 @@ def max_coordinat_values(config: Dict[str, Any]) -> None:
 
 
 def validate_and_convert_config(raw_config: Dict[str, str]) -> Dict[str, Any]:
-    """Validates required keys, converts types, and checks bounds."""
+    """Validates required keys, converts types, and checks bounds.
+
+    Args:
+        raw_config: Raw string key/value pairs read from the
+            configuration file.
+
+    Returns:
+        The fully validated and type-converted configuration dict.
+
+    Raises:
+        ValueError: If any key is missing, malformed, or out of bounds.
+    """
     config = convert_config_types(raw_config)
     max_coordinat_values(config)
     return config
@@ -106,6 +150,10 @@ def parse_config(filepath: str) -> Dict[str, Any]:
 
     Returns:
         A dictionary containing parsed configuration values.
+
+    Raises:
+        FileNotFoundError: If `filepath` does not exist.
+        ValueError: If the file is malformed or fails validation.
     """
     key_values: Dict[str, str] = {}
 

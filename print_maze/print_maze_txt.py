@@ -9,6 +9,13 @@ def wall_to_hex(cell_walls: Dict[str, bool]) -> str:
     Bit 1 (2): East
     Bit 2 (4): South
     Bit 3 (8): West
+
+    Args:
+        cell_walls: Dict with boolean walls keyed by "N", "E", "S", "W"
+            (True means the wall is closed).
+
+    Returns:
+        A single lowercase hexadecimal digit encoding the closed walls.
     """
     val = 0
     if cell_walls.get("N", False):
@@ -29,7 +36,19 @@ def write_maze_txt(
     exit: Tuple[int, int],
     path_str: str,
 ) -> None:
-    """Writes the maze structure, coordinates, and path to the output file."""
+    """Writes the maze structure, coordinates, and path to the output file.
+
+    Args:
+        cells: 2D maze grid in cells[y][x] format.
+        output_filename: Path of the file to write.
+        entry: (x, y) coordinates of the entry cell.
+        exit: (x, y) coordinates of the exit cell.
+        path_str: The entry-to-exit path as a string of "N"/"E"/"S"/"W"
+            letters.
+
+    Raises:
+        OSError: If the file cannot be opened or written to.
+    """
     with open(output_filename, "w", encoding="utf-8") as file:
         for row in cells:
             hex_digits = []

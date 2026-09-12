@@ -8,8 +8,16 @@ from kruskal import generate_kruskal_maze
 def get_block(height: int, width: int) -> Set[Tuple[int, int]]:
     """Get the cell coordinates for the '42' pattern in the center.
 
-    Prints a message to stderr/console if the maze size cannot accommodate
-    the '42' pattern as required by the subject.
+    Prints a message to stderr/console if the maze size cannot
+    accommodate the '42' pattern as required by the subject.
+
+    Args:
+        height: Number of rows of the maze.
+        width: Number of columns of the maze.
+
+    Returns:
+        A set of (row, col) coordinates to leave fully closed so the
+        "42" shape is drawn; an empty set if the maze is too small.
     """
     digit_four = [
         "X.X",
@@ -55,12 +63,24 @@ def get_block(height: int, width: int) -> Set[Tuple[int, int]]:
 
 
 def get_kruskal(
-        cells,
+        cells: List[List[Dict[str, bool]]],
         config: Dict[str, Any],
         blocked_cells: Set[Tuple[int, int]],
         seed: Optional[int]
 ) -> List[List[Dict[str, bool]]]:
-    """Generate a perfect maze using Kruskal with blocked cells."""
+    """Generate a perfect maze using Kruskal with blocked cells.
+
+    Args:
+        cells: Pre-built grid (cells[y][x]) with every wall closed.
+        config: Configuration dict containing `WIDTH` and `HEIGHT`.
+        blocked_cells: Cells to leave fully closed, given as
+            (row, col) coordinates (converted internally to (x, y)
+            before being passed to the Kruskal generator).
+        seed: Optional seed for reproducible generation.
+
+    Returns:
+        The generated maze in cells[y][x] format.
+    """
     blocked_xy = set()
 
     for row, col in blocked_cells:

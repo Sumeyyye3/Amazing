@@ -2,15 +2,17 @@
 
 import random
 from typing import Any, Dict, List, Optional, Tuple
-from fourty_two import get_block, get_kruskal
-from generate_false import generate_pacman_maze
-from pathfinder import find_shortest_path
-from print_maze import write_maze_txt
+from fourty_two import get_block
 from maze_generate import MazeGenerator
 
 
 class Colors:
-    """ANSI color codes for maze wall rendering."""
+    """ANSI color codes for maze wall rendering.
+
+    Attributes:
+        wall_color_palette: List of ANSI escape codes cycled through
+            when the user rotates the wall color in the menu.
+    """
 
     wall_color_palette = [
         "\033[97m",
@@ -32,7 +34,16 @@ def print_with_colored(
     wall_color: str,
     path_coords: Optional[List[Tuple[int, int]]],
 ) -> None:
-    """Print the maze with colored walls, entry, exit, and solution path."""
+    """Print the maze with colored walls, entry, exit, and solution path.
+
+    Args:
+        cells: 2D maze grid in cells[y][x] format.
+        entry: (x, y) coordinates of the entry cell.
+        exit: (x, y) coordinates of the exit cell.
+        wall_color: ANSI escape code used to color the walls.
+        path_coords: (row, col) coordinates of the solution path to
+            highlight, or None to hide the path.
+    """
     reset = "\033[0m"
     extry_exit_color = "\033[95m"
     path_color = "\033[1m\033[95m"
@@ -48,6 +59,12 @@ def print_with_colored(
 
     blocked_cells = get_block(height, width)
 
+    # entry/exit (x, y) = (sütun, satır) formatında geliyor; döngüde
+    # x satır indeksi, y sütun indeksi, o yüzden (satır, sütun)'a
+    # çeviriyoruz.
+    entry_row_col = (entry[1], entry[0])
+    exit_row_col = (exit[1], exit[0])
+
     print(f"{wall_color}*{'-----*' * width}{reset}")
 
     for x in range(height):
@@ -57,9 +74,9 @@ def print_with_colored(
         for y in range(width):
             cell = cells[x][y]
 
-            if (x, y) == entry:
+            if (x, y) == entry_row_col:
                 row_str += f"  {extry_exit_color}\u2764{reset}  "
-            elif (x, y) == exit:
+            elif (x, y) == exit_row_col:
                 row_str += f"  {extry_exit_color}\u2764{reset}  "
             elif (x, y) in path_set:
                 row_str += f"  {path_color}.{reset}  "
@@ -97,14 +114,27 @@ def print_with_colored(
 def path_cell_coords(
     entry: Tuple[int, int], path_str: str
 ) -> List[Tuple[int, int]]:
-    """Convert path direction string (N, E, S, W) to list of coordinates."""
+    """Convert path direction string (N, E, S, W) to list of coordinates.
+
+    `entry` is given as (x, y) = (col, row); the returned coordinates
+    are (row, col), matching cells[row][col] / print_with_colored.
+
+    Args:
+        entry: (x, y) coordinates of the starting cell.
+        path_str: String of "N"/"E"/"S"/"W" letters describing the path.
+
+    Returns:
+        The list of (row, col) coordinates visited along the path,
+        starting with `entry`'s own (row, col) position.
+    """
     moves: Dict[str, Tuple[int, int]] = {
         "N": (-1, 0),
         "S": (1, 0),
         "E": (0, 1),
         "W": (0, -1)
     }
-    row, col = entry
+    entry_x, entry_y = entry
+    row, col = entry_y, entry_x
     coords = [(row, col)]
     for direction in path_str:
         drow, dcol = moves[direction]
@@ -114,15 +144,24 @@ def path_cell_coords(
 
 
 def menu(
-    first_maze,
-    config: Dict[str, Any]
+    first_maze: List[List[Dict[str, bool]]],
+    config: Dict[str, Any],
+    first_path: str,
 ) -> None:
-    """Run interactive visualizer menu loop."""
+    """Run interactive visualizer menu loop.
+
+    Args:
+        first_maze: The already-generated maze to display first, in
+            cells[y][x] format.
+        config: The validated configuration dict.
+        first_path: The shortest path already computed for
+            `first_maze`, as a string of "N"/"E"/"S"/"W" letters.
+    """
     entry = config["ENTRY"]
     exit = config["EXIT"]
     color_index = 0
     show_path = False
-    current_path = False
+    current_path = first_path
     maze = first_maze
     while True:
         print("\n=== A-Maze-ing ===")
@@ -134,12 +173,15 @@ def menu(
         choice = input("Choice? (1-4): ").strip()
         blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
         if choice == "1":
-            new_seed = config["SEED"]
-            if config["SEED"] is None:
-                new_seed = random.randint(0, 10**9)
-            generator = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["PERFECT"], new_seed)
+            new_seed = random.randint(0, 10**9)
+            generator = MazeGenerator(
+                config["WIDTH"], config["HEIGHT"], config["PERFECT"],
+                new_seed
+            )
             if config["PERFECT"]:
-                maze, shortest_path =generator.generate_perfect(config, blocked_cell)
+                maze, shortest_path = generator.generate_perfect(
+                    config, blocked_cell
+                )
             else:
                 maze, shortest_path = generator.generate_not_perfect(
                     config, blocked_cell
