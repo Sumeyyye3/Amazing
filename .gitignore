@@ -1,5 +1,5 @@
 .venv
-print_maze/maze.txt
+maze.txt
 __pycache__/
 *.pyc
 .mypy_cache/

@@ -72,7 +72,7 @@ Program çalıştığında labirenti terminale çizer ve şu menüyü sunar:
 | `HEIGHT` | Labirent yüksekliği | ✅ | `HEIGHT=15` |
 | `ENTRY` | Giriş koordinatı `x,y` | ✅ | `ENTRY=1,1` |
 | `EXIT` | Çıkış koordinatı `x,y` | ✅ | `EXIT=12,13` |
-| `OUTPUT_FILE` | Çıktı dosyasının adı | ✅ | `OUTPUT_FILE=print_maze/maze.txt` |
+| `OUTPUT_FILE` | Çıktı dosyasının adı | ✅ | `OUTPUT_FILE=maze.txt` |
 | `PERFECT` | `True`/`False` — tek yollu mu, oynanabilir board mu | ✅ | `PERFECT=False` |
 | `SEED` | Rastgele üretimi sabitlemek için tohum değeri | İsteğe bağlı | `SEED=42` |
 
@@ -83,7 +83,7 @@ WIDTH = 15
 HEIGHT = 15
 ENTRY = 1,1
 EXIT = 12,13
-OUTPUT_FILE = print_maze/maze.txt
+OUTPUT_FILE = maze.txt
 PERFECT = False
 ```
 

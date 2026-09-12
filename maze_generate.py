@@ -1,10 +1,10 @@
 import random
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple
-from print_maze import write_maze_txt
 from generate_false import generate_pacman_maze
 from pathfinder import find_shortest_path
 from fourty_two import get_kruskal
+from print_maze_txt import write_maze_txt
 
 Cell = Dict[str, bool]
 Maze = List[List[Cell]]
