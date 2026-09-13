@@ -47,6 +47,8 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     required_keys = {
         "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
     }
+    optional_keys = {"SEED"}
+    allowed_keys = required_keys | optional_keys
     missing_keys = required_keys - set(dict_config.keys())
 
     if missing_keys:
@@ -54,6 +56,11 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
             f"Missing mandatory configuration keys: {', '.join(missing_keys)}"
         )
 
+    unexpected_keys = set(dict_config.keys()) - allowed_keys
+    if unexpected_keys:
+        raise ValueError(
+            f"Unexpected configuration key(s): {', '.join(sorted(unexpected_keys))}"
+        )
     config: Dict[str, Any] = {}
 
     try:
