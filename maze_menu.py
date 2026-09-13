@@ -142,6 +142,7 @@ def menu(
     first_maze: List[List[Dict[str, bool]]],
     config: Dict[str, Any],
     first_path: str,
+    seed_flag = 1
 ) -> None:
     """Run interactive visualizer menu loop.
 
@@ -168,7 +169,10 @@ def menu(
         choice = input("Choice? (1-4): ").strip()
         blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
         if choice == "1":
-            new_seed = random.randint(0, 10**9)
+            if not seed_flag:
+                new_seed = random.randint(0, 10**9)
+            else:
+                new_seed = config["SEED"]
             generator = MazeGenerator(
                 config["WIDTH"], config["HEIGHT"], config["PERFECT"],
                 new_seed

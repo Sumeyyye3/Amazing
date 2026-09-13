@@ -1,5 +1,3 @@
-"""Main executable file for A-Maze-ing maze generator."""
-
 import sys
 from typing import Dict, List, Set, Tuple
 from fourty_two import get_block
@@ -97,11 +95,6 @@ def main() -> None:
         print(f"Unexpected error while reading configuration: {e}")
         sys.exit(1)
 
-    # (width-1) * (height-1) is the maximum number of independent loops
-    # a grid of this size could ever have. If it's below 2, a
-    # PERFECT=False (Pac-Man-style) board with "at least two
-    # independent routes" is structurally impossible, regardless of
-    # the generation algorithm.
     max_possible_loops = (config["WIDTH"] - 1) * (config["HEIGHT"] - 1)
     if not config["PERFECT"] and max_possible_loops < 2:
         print(
@@ -115,8 +108,6 @@ def main() -> None:
 
     blocked_cells = get_block(config["HEIGHT"], config["WIDTH"])
 
-    # entry/exit (x, y) formatında; blocked_cells (row, col) formatında,
-    # bu yüzden karşılaştırmadan önce çeviriyoruz.
     entry_row_col = (config["ENTRY"][1], config["ENTRY"][0])
     exit_row_col = (config["EXIT"][1], config["EXIT"][0])
 
@@ -149,9 +140,9 @@ def main() -> None:
         maze, shortest_path = generator.generate_not_perfect(
             config, blocked_cells
         )
-
+    seed_flag = generator.send_seed
     print_maze_ascii(maze, config["ENTRY"], config["EXIT"], blocked_cells)
-    menu(maze, config, shortest_path)
+    menu(maze, config, shortest_path, seed_flag)
 
 
 if __name__ == "__main__":

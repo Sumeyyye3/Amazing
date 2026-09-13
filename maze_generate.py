@@ -43,10 +43,17 @@ class MazeGenerator:
         """
         self.width = width
         self.height = height
-        self.perfect = perfect
-        self.seed = seed
+        self.perfect = perfect,
+        flag = 0
         if seed is not None:
             random.seed(seed)
+            flag = 1
+
+        self.seed = seed
+
+
+    def send_seed(self) -> int:
+        return self.flag
 
     def generate_walls(self) -> Maze:
         """Creates an empty maze grid with every wall closed.
@@ -57,9 +64,9 @@ class MazeGenerator:
             four directions closed).
         """
         cells: Maze = []
-        for _ in range(self.height):  # runs once per row
-            row: List[Cell] = []  # build the row list
-            for _ in range(self.width):  # runs once per column
+        for _ in range(self.height):
+            row: List[Cell] = []
+            for _ in range(self.width):
                 cell = {"N": True, "E": True, "S": True, "W": True}
                 row.append(cell)
             cells.append(row)
