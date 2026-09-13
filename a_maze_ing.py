@@ -22,19 +22,15 @@ def print_maze_ascii(
         blocked: (row, col) coordinates of cells to render as fully
             blocked (e.g. the "42" pattern).
     """
-    height = len(cells)  # satır sayımız
-    width = len(cells[0])  # sütun sayımız (bir satırın leni oluyor otomatik)
-
-    # entry/exit (x, y) = (sütun, satır) formatında geliyor; aşağıdaki
-    # döngüde x satır indeksi, y sütun indeksi, o yüzden karşılaştırmadan
-    # önce (satır, sütun)'a çeviriyoruz.
+    height = len(cells)
+    width = len(cells[0])
     entry_row_col = (entry[1], entry[0])
     exit_row_col = (exit[1], exit[0])
 
     print("*" + "-----*" * width)
     for x in range(height):
-        row_str = "|"  # satırın en solundaki dış duvar
-        bottom_str = "*"  # alt duvar çizgisinin başlangıç köşesi
+        row_str = "|"
+        bottom_str = "*"
 
         for y in range(width):
             cell = cells[x][y]

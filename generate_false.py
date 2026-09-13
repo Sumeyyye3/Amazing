@@ -30,11 +30,9 @@ def _has_3x3_open(
             for i in range(3):
                 for j in range(3):
                     cx, cy = x + j, y + i
-                    # Check internal vertical wall (East of cx, cy)
                     if j < 2 and cells[cy][cx]["E"]:
                         is_open = False
                         break
-                    # Check internal horizontal wall (South of cx, cy)
                     if i < 2 and cells[cy][cx]["S"]:
                         is_open = False
                         break
@@ -142,10 +140,9 @@ def generate_pacman_maze(
         if (cx, cy) in blocked_xy:
             continue
 
-        # Kapalı olan ve bloklanmamış komşulara giden duvarları topla
         walls: List[Tuple[str, int, int]] = []
         for d in ("N", "E", "S", "W"):
-            if cells[cy][cx][d]:  # Duvar kapalıysa
+            if cells[cy][cx][d]:
                 nx, ny = cx + DX[d], cy + DY[d]
                 if 0 <= nx < width and 0 <= ny < height:
                     if (nx, ny) not in blocked_xy:
@@ -169,11 +166,10 @@ def generate_pacman_maze(
                 if (x, y) in blocked_xy:
                     continue
 
-                # Count closed walls
                 closed_count = sum(
                     1 for d in ("N", "E", "S", "W") if cells[y][x][d]
                 )
-                if closed_count == 3:  # Dead-end cell
+                if closed_count == 3:
                     possible_opens: List[Tuple[str, int, int]] = []
                     for d in ("N", "E", "S", "W"):
                         if cells[y][x][d]:

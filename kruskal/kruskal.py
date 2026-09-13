@@ -18,7 +18,6 @@ class SetManager:
             width: Number of columns in the maze grid.
             height: Number of rows in the maze grid.
         """
-        # otomatik herkes kendisinin lideri ilk başta
         self.lead = {}
         for x in range(width):
             for y in range(height):
@@ -35,7 +34,6 @@ class SetManager:
             The (x, y) coordinate of the set's representative.
         """
         if self.lead[cell] != cell:
-            # en üst lideri bul
             self.lead[cell] = self.find(self.lead[cell])
         return self.lead[cell]
 
@@ -52,7 +50,6 @@ class SetManager:
         lead1 = self.find(cell1)
         lead2 = self.find(cell2)
 
-        # liderler farklıysa birleştir, aynıysa birleştirme döngü olur
         if lead1 != lead2:
             self.lead[lead2] = lead1
             return True
@@ -86,37 +83,17 @@ def generate_kruskal_maze(
     Returns:
         The same `cells` grid, with walls carved into a spanning tree.
     """
-    # cells = []  # hücrelerimiz
 
-    if blocked_cells is None:
-        blocked_cells = set()
-
-    if seed is not None:
-        random.seed(seed)
-
-    # for _ in range(height):  # satır sayısı kadar çalışır
-    #     row = []  # satır listesi oluşturur
-    #     for _ in range(width):  # sütun sayısı kadar çalışır
-    #         cell = {"N": True, "E": True, "S": True, "W": True}
-    #         row.append(cell)
-    #     cells.append(row)
-
-    # yıkılabilecek potansiyel duvarları konumlarıyla birlikte
-    # tespit edip bu listeye atıyoruz
     walls = []
-    for y in range(height):  # satırlar (x, y) x:satır indexi
-        for x in range(width):  # sütunlar (x, y) y:sütun indexi
+    for y in range(height):
+        for x in range(width):
             if (x, y) in blocked_cells:
                 continue
             if x < width - 1 and (x + 1, y) not in blocked_cells:
-                # hücre, hücre, ortakduvar, ortakduvar
-                # diyoruz ki x,y nin E si ile x+1,y nin W si ortak duvar
                 walls.append(((x, y), (x + 1, y), "E", "W"))
             if y < height - 1 and (x, y + 1) not in blocked_cells:
-                # aynı işlemi alt üst için yaptım
                 walls.append(((x, y), (x, y + 1), "S", "N"))
 
-    # orjinal listeyi değiştiren bir method, listeyi random karıştırır
     random.shuffle(walls)
 
     sets = SetManager(width, height)
