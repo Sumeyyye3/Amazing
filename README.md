@@ -148,18 +148,17 @@ path = find_shortest_path(maze, entry=(0, 0), exit_pos=(9, 9))
 **Sümeyye Doğan**
 - Kruskal algoritmasının ve Union-Find veri yapısının yazımı (`kruskal/kruskal.py`)
 - `PERFECT=True` modunun uçtan uca kurulması
-- `config.txt` parse işlemleri (`parse/parse_config.py`) — zorunlu alan kontrolü, tip dönüşümü, sınır doğrulaması
 - Repo'daki `config.txt` örneğinin hazırlanması
-- `Makefile`'ın ilk yazımı
+- "42" deseninin labirente yerleştirilmesi (`fourty_two.py`)
+- `PERFECT=False` modunun (`generate_false.py`) — döngü ekleme ve çıkmaz sokak azaltma algoritması — birlikte tasarlanması ve yazılması
 
 **Barış Sakallı**
 - En kısa yol algoritmasının (BFS, `pathfinder/pathfinder.py`) tasarımı ve yazımı
 - `Makefile` ve `.gitignore` üzerinde iyileştirmeler
 - `README.md`'nin hazırlanması
-- "42" deseninin labirente yerleştirilmesi (`fourty_two.py`)
+- `Makefile`'ın ilk yazımı
+- `config.txt` parse işlemleri (`parse/parse_config.py`) — zorunlu alan kontrolü, tip dönüşümü, sınır doğrulaması
 
-**Ortak**
-- `PERFECT=False` modunun (`generate_false.py`) — döngü ekleme ve çıkmaz sokak azaltma algoritması — birlikte tasarlanması ve yazılması
 
 ### Planlama Süreci
 
