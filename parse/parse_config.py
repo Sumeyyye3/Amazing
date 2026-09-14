@@ -45,9 +45,9 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
             be converted to its expected type.
     """
     required_keys = {
-        "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
+        "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE"
     }
-    optional_keys = {"SEED"}
+    optional_keys = {"SEED", "PERFECT"}
     allowed_keys = required_keys | optional_keys
     missing_keys = required_keys - set(dict_config.keys())
 
@@ -76,8 +76,10 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     config["ENTRY"] = parse_coordinates(dict_config["ENTRY"], "ENTRY")
     config["EXIT"] = parse_coordinates(dict_config["EXIT"], "EXIT")
 
-    perfect_str = dict_config["PERFECT"].lower()
-    if perfect_str in ("true", "1"):
+    perfect_str = dict_config.get("PERFECT", "").strip().lower()
+    if perfect_str == "":
+        config["PERFECT"] = False
+    elif perfect_str in ("true", "1"):
         config["PERFECT"] = True
     elif perfect_str in ("false", "0"):
         config["PERFECT"] = False
@@ -185,9 +187,16 @@ def parse_config(filepath: str) -> Dict[str, Any]:
             key = key.strip().upper()
             value = value.strip()
 
-            if not key or not value:
+            if not key:
                 raise ValueError(
-                    f"Line {line_number}: Empty key or value found."
+                    f"Line {line_number}: Empty key found."
+                )
+
+            # PERFECT boş bırakılabilir; subject'e göre varsayılanı
+            # False'tur. Diğer anahtarlarda boş değer hata sayılır.
+            if not value and key != "PERFECT":
+                raise ValueError(
+                    f"Line {line_number}: Empty value found for '{key}'."
                 )
 
             key_values[key] = value

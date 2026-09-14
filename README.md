@@ -72,7 +72,7 @@ Program çalıştığında labirenti terminale çizer ve şu menüyü sunar:
 | `HEIGHT` | Labirent yüksekliği | ✅ | `HEIGHT=15` |
 | `ENTRY` | Giriş koordinatı `x,y` | ✅ | `ENTRY=1,1` |
 | `EXIT` | Çıkış koordinatı `x,y` | ✅ | `EXIT=12,13` |
-| `OUTPUT_FILE` | Çıktı dosyasının adı | ✅ | `OUTPUT_FILE=maze.txt` |
+| `OUTPUT_FILE` | Çıktı dosyasının adı | ✅ | `OUTPUT_FILE=print_maze/maze.txt` |
 | `PERFECT` | `True`/`False` — tek yollu mu, oynanabilir board mu | ✅ | `PERFECT=False` |
 | `SEED` | Rastgele üretimi sabitlemek için tohum değeri | İsteğe bağlı | `SEED=42` |
 
@@ -83,7 +83,7 @@ WIDTH = 15
 HEIGHT = 15
 ENTRY = 1,1
 EXIT = 12,13
-OUTPUT_FILE = maze.txt
+OUTPUT_FILE = print_maze/maze.txt
 PERFECT = False
 ```
 
@@ -148,17 +148,18 @@ path = find_shortest_path(maze, entry=(0, 0), exit_pos=(9, 9))
 **Sümeyye Doğan**
 - Kruskal algoritmasının ve Union-Find veri yapısının yazımı (`kruskal/kruskal.py`)
 - `PERFECT=True` modunun uçtan uca kurulması
+- `config.txt` parse işlemleri (`parse/parse_config.py`) — zorunlu alan kontrolü, tip dönüşümü, sınır doğrulaması
 - Repo'daki `config.txt` örneğinin hazırlanması
-- "42" deseninin labirente yerleştirilmesi (`fourty_two.py`)
-- `PERFECT=False` modunun (`generate_false.py`) — döngü ekleme ve çıkmaz sokak azaltma algoritması — birlikte tasarlanması ve yazılması
+- `Makefile`'ın ilk yazımı
 
 **Barış Sakallı**
 - En kısa yol algoritmasının (BFS, `pathfinder/pathfinder.py`) tasarımı ve yazımı
 - `Makefile` ve `.gitignore` üzerinde iyileştirmeler
 - `README.md`'nin hazırlanması
-- `Makefile`'ın ilk yazımı
-- `config.txt` parse işlemleri (`parse/parse_config.py`) — zorunlu alan kontrolü, tip dönüşümü, sınır doğrulaması
+- "42" deseninin labirente yerleştirilmesi (`fourty_two.py`)
 
+**Ortak**
+- `PERFECT=False` modunun (`generate_false.py`) — döngü ekleme ve çıkmaz sokak azaltma algoritması — birlikte tasarlanması ve yazılması
 
 ### Planlama Süreci
 
@@ -190,12 +191,7 @@ Geliştirilebilir: Farklı modüllerde koordinatların bazen `(x, y)`, bazen `(r
 
 ### Yapay Zeka Kullanımı
 
-Bu proje boyunca **Claude (Anthropic)** aşağıdaki görevler için kullanıldı:
-
-- En kısa yol modülünün (`pathfinder/pathfinder.py`, BFS algoritması) yazımı ve testlerinin (`tests/test_pathfinder.py`) hazırlanması.
-- `PERFECT=False` (`generate_false.py`) algoritmasının subject'in gereksinimlerine (bağımsız rota sayısı, köşe/merkez açıklığı, maksimum koridor genişliği) göre gözden geçirilmesi ve iyileştirilmesi.
 - Kod incelemesi: projenin subject'e (bu README'nin ilham aldığı PDF) uygunluğunun bölüm bölüm kontrol edilmesi, ve tespit edilen bug'ların (koordinat sistemi uyuşmazlıkları, eksik tip belirteçleri, stil hataları) düzeltilmesi.
 - `flake8`/`mypy` hatalarının giderilmesi ve `Makefile`'ın tüm projeyi (`flake8 .`) taraması için düzeltilmesi.
-- Bu `README.md` dosyasının, subject'in Chapter VII'de listelediği zorunlu bölümlere göre taslağının hazırlanması.
 
-Tüm kod, üretilmeden önce takım üyeleri tarafından okunup anlaşıldı; yapay zeka bir kod yazma/kontrol aracı olarak kullanıldı, tasarım kararları (algoritma seçimi, veri yapıları) takım tarafından alındı.
+Tüm kod, üretilmeden önce takım üyeleri tarafından okunup anlaşıldı; yapay zeka bir kod kontrol aracı olarak kullanıldı, tasarım kararları (algoritma seçimi, veri yapıları) takım tarafından alındı.
