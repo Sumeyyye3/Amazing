@@ -127,7 +127,7 @@ def generate_pacman_maze(
     if seed is not None:
         random.seed(seed)
 
-    target_loops = max(3, (width * height) // 15)
+    target_loops = max(3, (width * height) // 50)
     removed_walls = 0
     attempts = 0
     max_attempts = target_loops * 50
@@ -166,9 +166,12 @@ def generate_pacman_maze(
                 if (x, y) in blocked_xy:
                     continue
 
-                closed_count = sum(
-                    1 for d in ("N", "E", "S", "W") if cells[y][x][d]
-                )
+                closed_count = 0
+
+                for d in ("N", "E", "S", "W"):
+                    if cells[y][x][d]:
+                        closed_count += 1
+
                 if closed_count == 3:
                     possible_opens: List[Tuple[str, int, int]] = []
                     for d in ("N", "E", "S", "W"):

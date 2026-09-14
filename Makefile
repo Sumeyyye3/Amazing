@@ -8,8 +8,6 @@ APP = a_maze_ing.py config.txt
 all: run lint clean
 
 install:
-	$(PIP) install --user --ignore-installed flake8
-	$(PIP) install --user --ignore-installed mypy
 	$(PIP) install --user --ignore-installed poetry
 	$(POETRY) install
 
