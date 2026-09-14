@@ -17,11 +17,6 @@ packages = [
     { include = "maze_generate.py" },
     { include = "maze_menu.py"}
 ]
-exclude = [
-    "kruskal/*.pdf",
-    "parse/*.pdf"
-]
-
 
 [tool.poetry.dependencies]
 python = "^3.10"
