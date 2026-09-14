@@ -144,6 +144,7 @@ def menu(
     first_path: str,
     seed_flag: Optional[int]
 ) -> None:
+
     """Run interactive visualizer menu loop.
 
     Args:
