@@ -96,7 +96,6 @@ def generate_pacman_maze(
     cells: List[List[Dict[str, bool]]],
     width: int,
     height: int,
-    seed: Optional[Any] = None,
     blocked_cells: Optional[Set[Tuple[int, int]]] = None
 ) -> List[List[Dict[str, bool]]]:
     """Generate an imperfect maze usable by a Pac-Man-like game.
@@ -120,12 +119,9 @@ def generate_pacman_maze(
     if blocked_cells is None:
         blocked_cells = set()
 
-    cells = get_kruskal(cells, config, blocked_cells, seed)
+    cells = get_kruskal(cells, config, blocked_cells)
 
     blocked_xy = {(col, row) for row, col in blocked_cells}
-
-    if seed is not None:
-        random.seed(seed)
 
     target_loops = max(3, (width * height) // 50)
     removed_walls = 0

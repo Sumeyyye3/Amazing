@@ -1,5 +1,3 @@
-"""Interactive terminal menu for the maze visualizer."""
-
 import random
 from typing import Any, Dict, List, Optional, Tuple
 from fourty_two import get_block
@@ -178,12 +176,7 @@ def menu(
         choice = input("Choice? (1-4): ").strip()
         blocked_cell = get_block(generator.config["HEIGHT"], generator.config["WIDTH"])
         if choice == "1":
-            if not generator.flag:
-                new_seed = random.randint(0, 10**9)
-            else:
-                new_seed = generator.config["SEED"]
-
-            generator = MazeGenerator(new_seed)
+            generator = MazeGenerator()
 
             if generator.config["PERFECT"]:
                 maze, shortest_path = generator.generate_perfect(

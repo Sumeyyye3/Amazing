@@ -1,5 +1,3 @@
-"""42 pattern positioning and Kruskal wrapper."""
-
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple
 from kruskal import generate_kruskal_maze
@@ -66,7 +64,6 @@ def get_kruskal(
         cells: List[List[Dict[str, bool]]],
         config: Dict[str, Any],
         blocked_cells: Set[Tuple[int, int]],
-        seed: Optional[int]
 ) -> List[List[Dict[str, bool]]]:
     """Generate a perfect maze using Kruskal with blocked cells.
 
@@ -87,7 +84,7 @@ def get_kruskal(
         blocked_xy.add((col, row))
 
     cells_kruskal = generate_kruskal_maze(
-        cells, config["WIDTH"], config["HEIGHT"], seed, blocked_xy
+        cells, config["WIDTH"], config["HEIGHT"], blocked_xy
     )
 
     return cells_kruskal

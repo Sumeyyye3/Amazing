@@ -1,9 +1,29 @@
 from fourty_two import get_block
 from parse import parse_config
+from typing import Any
 import sys
 
 
-def config_proces():
+def config_proces() -> tuple[dict[str, Any], set[tuple[int, int]]]:
+    """
+    Reads the config file path from sys.argv[1], parses and validates it,
+    and returns the config along with cells blocked by the '42' pattern.
+
+    Takes no parameters; reads the config path from sys.argv[1] instead.
+
+    Exits the program (sys.exit(1)) if:
+        - the config file is not found or invalid,
+        - the maze size can't support PERFECT=False (needs >= 2 loops),
+        - ENTRY or EXIT falls inside a blocked '42' pattern cell.
+
+    Returns:
+        tuple:
+            - config (dict): Parsed config with keys WIDTH, HEIGHT,
+              PERFECT, ENTRY, EXIT.
+            - blocked_cells: Set/list of (row, col) cells blocked by
+              the '42' pattern.
+    """
+
     config_path = sys.argv[1]
 
     try:

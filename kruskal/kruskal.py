@@ -60,7 +60,6 @@ def generate_kruskal_maze(
     cells: List[List[Dict[str, bool]]],
     width: int,
     height: int,
-    seed: Optional[int],
     blocked_cells: Set[Tuple[int, int]],
 ) -> List[List[Dict[str, bool]]]:
     """Carves a perfect maze into `cells` using randomized Kruskal.
