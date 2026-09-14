@@ -5,6 +5,7 @@ from generate_false import generate_pacman_maze
 from pathfinder import find_shortest_path
 from fourty_two import get_kruskal
 from print_maze_txt import write_maze_txt
+from config_process import config_proces
 
 Cell = Dict[str, bool]
 Maze = List[List[Cell]]
@@ -23,11 +24,7 @@ class MazeGenerator:
     """
 
     def __init__(
-        self,
-        width: int,
-        height: int,
-        perfect: bool = False,
-        seed: Optional[int] = None
+        self, seed: Optional[int] = None
     ) -> None:
         """Creates a MazeGenerator instance with the given parameters.
 
@@ -41,18 +38,45 @@ class MazeGenerator:
             seed: Random seed to make generation reproducible. If
                 None, a different result is produced each time.
         """
-        self.width = width
-        self.height = height
-        self.perfect = perfect
+
+        config, blocked_cells = config_proces()
+        self.blocked_cells = blocked_cells
+        self.config = config
         self.flag = 0
+        seed = self.config.get("SEED")
+        self.seed = seed
         if seed is not None:
             random.seed(seed)
             self.flag = 1
-        self.seed = seed
+
+        self.maze = self.create_frst_maze()
+        self.shortest_path = self.maze_path(self.maze, self.config)
+
+    def create_frst_maze(self):
+        if self.config["PERFECT"]:
+            maze, _ = self.generate_perfect(
+                self.config, self.blocked_cells
+            )
+        else:
+            maze, _ = self.generate_not_perfect(
+                self.config, self.blocked_cells
+            )
+        # print_maze_ascii(maze, self.config["ENTRY"], self.config["EXIT"], self.blocked_cells)
+
+        return maze
+
+
+
+
+
 
     def send_seed(self) -> int:
         return self.flag
 
+
+
+
+        
     def generate_walls(self) -> Maze:
         """Creates an empty maze grid with every wall closed.
 
@@ -61,14 +85,21 @@ class MazeGenerator:
             {"N": True, "E": True, "S": True, "W": True} (i.e. all
             four directions closed).
         """
+        config = self.config
         cells: Maze = []
-        for _ in range(self.height):
+        for _ in range(config["HEIGHT"]):
             row: List[Cell] = []
-            for _ in range(self.width):
+            for _ in range(config["WIDTH"]):
                 cell = {"N": True, "E": True, "S": True, "W": True}
                 row.append(cell)
             cells.append(row)
         return cells
+
+
+
+
+
+
 
     def maze_path(self, maze: Maze, config: Config) -> str:
         """Computes the shortest path and writes the maze to file.
@@ -110,31 +141,10 @@ class MazeGenerator:
 
         return shortest_path
 
-    def generate(self, config: Config, blocked_cells: BlockedCells) -> Maze:
-        """Generates only the maze structure (no file/path work).
 
-        Depending on `self.perfect`, generates either a Kruskal-based
-        perfect maze or a Pac-Man-style playable maze.
 
-        Args:
-            config: Configuration dict containing keys like
-                `WIDTH`/`HEIGHT`.
-            blocked_cells: Set of (row, col) coordinates to leave fully
-                closed, such as the "42" pattern.
 
-        Returns:
-            The generated maze in cells[y][x] format.
-        """
-        cells = self.generate_walls()
-        if self.perfect:
-            maze = get_kruskal(cells, config, blocked_cells, self.seed)
-        else:
-            maze = generate_pacman_maze(
-                config, cells, self.width, self.height, self.seed,
-                blocked_cells
-            )
 
-        return maze
 
     def generate_perfect(
         self, config: Config, blocked_cells: BlockedCells
@@ -156,6 +166,11 @@ class MazeGenerator:
         maze = get_kruskal(cells, config, blocked_cells, self.seed)
         shortest_path_maze = self.maze_path(maze, config)
         return maze, shortest_path_maze
+
+
+
+
+
 
     def generate_not_perfect(
         self, config: Config, blocked_cells: BlockedCells

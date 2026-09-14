@@ -139,12 +139,8 @@ def path_cell_coords(
 
 
 def menu(
-    first_maze: List[List[Dict[str, bool]]],
-    config: Dict[str, Any],
-    first_path: str,
-    seed_flag: Optional[int]
+    generator
 ) -> None:
-
     """Run interactive visualizer menu loop.
 
     Args:
@@ -154,12 +150,24 @@ def menu(
         first_path: The shortest path already computed for
             `first_maze`, as a string of "N"/"E"/"S"/"W" letters.
     """
-    entry = config["ENTRY"]
-    exit = config["EXIT"]
+    entry = generator.config["ENTRY"]
+    exit = generator.config["EXIT"]
     color_index = 0
     show_path = False
-    current_path = first_path
-    maze = first_maze
+    current_path = generator.shortest_path
+    maze = generator.maze
+
+    if show_path and current_path:
+        shortest_coord = path_cell_coords(entry, current_path)
+    else:
+        shortest_coord = None
+    print_with_colored(
+        maze,
+        entry,
+        exit,
+        Colors.wall_color_palette[color_index],
+        shortest_coord,
+    )
     while True:
         print("\n=== A-Maze-ing ===")
         print("1. Re-generate a new maze")
@@ -168,23 +176,22 @@ def menu(
         print("4. Quit")
 
         choice = input("Choice? (1-4): ").strip()
-        blocked_cell = get_block(config["HEIGHT"], config["WIDTH"])
+        blocked_cell = get_block(generator.config["HEIGHT"], generator.config["WIDTH"])
         if choice == "1":
-            if not seed_flag:
+            if not generator.flag:
                 new_seed = random.randint(0, 10**9)
             else:
-                new_seed = config["SEED"]
-            generator = MazeGenerator(
-                config["WIDTH"], config["HEIGHT"], config["PERFECT"],
-                new_seed
-            )
-            if config["PERFECT"]:
+                new_seed = generator.config["SEED"]
+
+            generator = MazeGenerator(new_seed)
+
+            if generator.config["PERFECT"]:
                 maze, shortest_path = generator.generate_perfect(
-                    config, blocked_cell
+                    generator.config, blocked_cell
                 )
             else:
                 maze, shortest_path = generator.generate_not_perfect(
-                    config, blocked_cell
+                    generator.config, blocked_cell
                 )
             try:
                 current_path = shortest_path

@@ -15,7 +15,7 @@ packages = [
     { include = "fourty_two.py" },
     { include = "generate_false.py" },
     { include = "maze_generate.py" },
-    { include = "maze_menu.py"}
+    { include = "maze_menu.py"},
 ]
 
 [tool.poetry.dependencies]

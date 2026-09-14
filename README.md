@@ -6,7 +6,7 @@ Python ile yazılmış, konfigürasyon dosyasından okuduğu ayarlara göre labi
 
 ---
 
-## 📖 Description
+## 📖 Açıklama
 
 A-Maze-ing, verilen bir `config.txt` dosyasını okuyup iki farklı modda labirent üretebilen bir Python programıdır:
 
@@ -17,7 +17,7 @@ A-Maze-ing, verilen bir `config.txt` dosyasını okuyup iki farklı modda labire
 
 ---
 
-## ⚙️ Instructions
+## ⚙️ Talimatlar
 
 Proje bağımlılıkları [Poetry](https://python-poetry.org/) ile yönetiliyor ve bir `Makefile` üzerinden çalıştırılıyor.
 
@@ -179,7 +179,7 @@ Geliştirilebilir: Farklı modüllerde koordinatların bazen `(x, y)`, bazen `(r
 
 ---
 
-## 📚 Resources
+## 📚 Kaynaklar
 
 - [Kruskal's Algorithm — Wikipedia](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm)
 - [Disjoint-Set / Union-Find veri yapısı — Wikipedia](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)

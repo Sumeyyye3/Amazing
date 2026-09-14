@@ -192,8 +192,6 @@ def parse_config(filepath: str) -> Dict[str, Any]:
                     f"Line {line_number}: Empty key found."
                 )
 
-            # PERFECT boş bırakılabilir; subject'e göre varsayılanı
-            # False'tur. Diğer anahtarlarda boş değer hata sayılır.
             if not value and key != "PERFECT":
                 raise ValueError(
                     f"Line {line_number}: Empty value found for '{key}'."
