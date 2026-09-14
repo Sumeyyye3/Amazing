@@ -2,5 +2,5 @@ WIDTH = 5
 HEIGHT = 5
 EXIT = 4,4
 OUTPUT_FILE = maze.txt
-PERFECT = False
+PERFECT = FALSE
 ENTRY = 1,1

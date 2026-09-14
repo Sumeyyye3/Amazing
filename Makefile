@@ -37,5 +37,6 @@ fclean: clean
 	$(POETRY) env remove --all 2>/dev/null || true
 	rm -rf .venv
 	rm -rf poetry.lock
+	rm -rf maze.txt
 
 re: fclean install
