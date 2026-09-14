@@ -43,14 +43,12 @@ class MazeGenerator:
         """
         self.width = width
         self.height = height
-        self.perfect = perfect,
-        flag = 0
+        self.perfect = perfect
+        self.flag = 0
         if seed is not None:
             random.seed(seed)
-            flag = 1
-
+            self.flag = 1
         self.seed = seed
-
 
     def send_seed(self) -> int:
         return self.flag

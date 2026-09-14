@@ -59,7 +59,8 @@ def convert_config_types(dict_config: Dict[str, str]) -> Dict[str, Any]:
     unexpected_keys = set(dict_config.keys()) - allowed_keys
     if unexpected_keys:
         raise ValueError(
-            f"Unexpected configuration key(s): {', '.join(sorted(unexpected_keys))}"
+            f"Unexpected configuration key(s):"
+            f" {', '.join(sorted(unexpected_keys))}"
         )
     config: Dict[str, Any] = {}
 

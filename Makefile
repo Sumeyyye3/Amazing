@@ -8,9 +8,9 @@ APP = a_maze_ing.py config.txt
 all: run lint clean
 
 install:
-	$(PIP) install flake8
-	$(PIP) install mypy
-	$(PIP) install poetry
+	$(PIP) install --user --ignore-installed flake8
+	$(PIP) install --user --ignore-installed mypy
+	$(PIP) install --user --ignore-installed poetry
 	$(POETRY) install
 
 run:
@@ -24,7 +24,7 @@ lint:
 	mypy --exclude '^\.venv/' . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 package:
-	pip install build || uv tool install build || true
+	pip install build || true
 	python3 -m build --outdir .
 
 clean:

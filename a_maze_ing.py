@@ -136,7 +136,7 @@ def main() -> None:
         maze, shortest_path = generator.generate_not_perfect(
             config, blocked_cells
         )
-    seed_flag = generator.send_seed
+    seed_flag = generator.send_seed()
     print_maze_ascii(maze, config["ENTRY"], config["EXIT"], blocked_cells)
     menu(maze, config, shortest_path, seed_flag)
 

@@ -142,7 +142,7 @@ def menu(
     first_maze: List[List[Dict[str, bool]]],
     config: Dict[str, Any],
     first_path: str,
-    seed_flag = 1
+    seed_flag: Optional[int]
 ) -> None:
     """Run interactive visualizer menu loop.
 
