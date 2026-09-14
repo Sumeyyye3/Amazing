@@ -5,8 +5,6 @@ Cell = Dict[str, bool]
 Maze = List[List[Cell]]
 Coord = Tuple[int, int]
 
-# Her yön için (harf, dx, dy). cells[y][x] indekslemesine göre:
-# N -> y azalır, S -> y artar, E -> x artar, W -> x azalır.
 _DIRECTIONS: List[Tuple[str, int, int]] = [
     ("N", 0, -1),
     ("E", 1, 0),
@@ -62,7 +60,7 @@ def find_shortest_path(cells: Maze, entry: Coord, exit_pos: Coord) -> str:
 
         for direction, dx, dy in _DIRECTIONS:
             if cell.get(direction, True):
-                continue  # duvar kapalı, bu yönden geçilemez
+                continue
 
             neighbor = (cx + dx, cy + dy)
             if neighbor in visited:
